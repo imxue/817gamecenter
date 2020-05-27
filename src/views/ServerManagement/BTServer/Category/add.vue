@@ -1,55 +1,60 @@
 <template>
   <div style="width:440px">
     <Form ref="form" :model="form" :rules="rule" :label-width="180">
-      <FormItem label="BtServer类型" prop="type">
-        <Select v-model="form.type">
-          <Option :value="1">主Bt</Option>
-          <Option :value="0">Bt</Option>
+      <FormItem
+        :label="this.$t('BT') + this.$t('Server') + this.$t('Type')"
+        prop="type"
+      >
+        <Select v-model.number="form.type">
+          <Option :value="1"
+            >{{ $t("Not") }}{{ $t("Seeding") }}{{ $t("Server") }}</Option
+          >
+          <Option :value="0">{{ $t("Seeding") }}{{ $t("Server") }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="分组" prop="bt_server_group_id">
-        <Select v-model="form.bt_server_group_id">
+      <FormItem :label="this.$t('Group')" prop="bt_server_group_id">
+        <Select v-model="form.bt_server_group_id" :disabled="disabled">
           <Option v-for="item in ServerGroup" :value="item.id" :key="item.id">{{
             item.name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="地区" prop="area_code">
-        <Select v-model="form.area_code">
+      <FormItem :label="this.$t('Region')" prop="area_code">
+        <Select v-model="form.area_code" :disabled="disabled">
           <Option v-for="item in Area" :value="item.Id" :key="item.Id">{{
             item.Name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="线路类型" prop="line_type_id">
-        <Select v-model="form.line_type_id">
+      <FormItem :label="this.$t('Line') + this.$t('Type')" prop="line_type_id">
+        <Select v-model="form.line_type_id" :disabled="disabled">
           <Option v-for="item in LineType" :value="item.id" :key="item.id">{{
             item.name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="ip" prop="ip">
+      <FormItem :label="this.$t('IP')" prop="ip">
         <Row>
           <Col span="17">
-            <Input v-model="form.ip" type="text"> </Input>
+            <Input v-model="form.ip" placeholder="ip" type="text" />
           </Col>
           <Col span="7">
-            <Input v-model="form.port" type="text"> </Input>
+            <Input v-model.number="form.port" type="text" />
           </Col>
         </Row>
       </FormItem>
-      <FormItem label="是否启用" prop="enable">
-        <Select v-model="form.enable">
-          <Option :value="1">启用</Option>
-          <Option :value="0">禁用</Option>
+      <FormItem :label="this.$t('Available')" prop="enable">
+        <Select v-model.number="form.enable">
+          <Option :value="1">{{ $t("Enable") }}</Option>
+          <Option :value="0">{{ $t("Disabled") }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="备注" prop="comments">
+      <FormItem :label="this.$t('Remarks')" prop="comments">
         <Input
           v-model="form.comments"
           type="textarea"
           :rows="4"
-          placeholder="Enter something..."
+          placeholder="添加备注"
         />
       </FormItem>
       <FormItem>
@@ -58,11 +63,14 @@
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ this.$t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
-            <Button type="primary" :disabled="loading" @click="handleRetrun()"
-              >返回</Button
+            <Button
+              type="primary"
+              :disabled="loading"
+              @click="handleRetrun()"
+              >{{ this.$t("Back") }}</Button
             >
           </div>
         </div>
@@ -73,8 +81,8 @@
 
 <script>
 import {
-  getLineType,
-  getBTServerGroup,
+  getAllenabled,
+  getAllBtServerGroupenabled,
   addBTServer,
   getarea
 } from "@/api/server";
@@ -84,19 +92,49 @@ export default {
     return {
       loading: false,
       form: {
-        type: "",
+        type: 0,
         line_type_id: "",
-        area_code: 1001,
+        area_code: "",
         bt_server_group_id: "",
         ip: "",
-        port: 8080,
+        port: 80,
         enable: 1,
         comments: ""
       },
       rule: {
-        name: [
+        ip: [
           {
             required: true,
+            message: this.$t("Ipnb"),
+            trigger: "blur"
+          }
+        ],
+        bt_server_group_id: [
+          {
+            required: true,
+            message: "The name cannot be empty",
+            trigger: "blur"
+          }
+        ],
+        area_code: [
+          {
+            required: true,
+            type: "number",
+            message: "The name cannot be empty",
+            trigger: "blur"
+          }
+        ],
+        line_type_id: [
+          {
+            required: true,
+            message: "The name cannot be empty",
+            trigger: "blur"
+          }
+        ],
+        type: [
+          {
+            required: true,
+            type: "number",
             message: "The name cannot be empty",
             trigger: "blur"
           }
@@ -104,18 +142,25 @@ export default {
       },
       ServerGroup: [],
       LineType: [],
-      Area: []
+      Area: [],
+      disabled: false
     };
   },
   created() {
-    Promise.all([getLineType(), getBTServerGroup(), getarea()]).then(resp => {
-      this.LineType = resp[0].data;
+    this.disabled = true;
+    Promise.all([
+      getAllenabled(),
+      getAllBtServerGroupenabled(),
+      getarea()
+    ]).then(resp => {
+      this.LineType = resp[0].data.data;
       this.form.line_type_id = this.LineType[0] && this.LineType[0].id;
-      this.ServerGroup = resp[1].data;
+      this.ServerGroup = resp[1].data.data;
       this.form.bt_server_group_id =
         this.ServerGroup[0] && this.ServerGroup[1].id;
-      this.Area = resp[2].data;
-      console.log(this.Area);
+      this.Area = resp[2].data.data;
+      this.form.area_code = this.Area[0].Id;
+      this.disabled = false;
     });
   },
   methods: {
@@ -125,8 +170,10 @@ export default {
           try {
             this.loading = true;
             await addBTServer(this.form);
+            this.$router.go(-1);
+            this.$Message.success(this.$t("Creeat") + this.$t("Success"));
           } catch (error) {
-            console.log(error);
+            this.$Message.success(this.$t("Creeat") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }

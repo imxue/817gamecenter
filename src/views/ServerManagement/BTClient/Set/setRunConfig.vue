@@ -4,35 +4,79 @@
       ref="form"
       :model="form"
       :rules="rule"
-      :label-width="200"
+      :label-width="350"
       label-colon
       label-position="right"
     >
-      <FormItem label="下载游戏列表时间间隔" prop="download_game_list_interval">
+      <FormItem
+        :label="
+          this.$t('Download') +
+            this.$t('Game') +
+            this.$t('List') +
+            this.$t('interval')
+        "
+        prop="download_game_list_interval"
+      >
         <Input
-          v-model="form.download_game_list_interval"
-          placeholder="Enter something..."
-        ></Input>
-      </FormItem>
-      <FormItem label="上报运行状态时间间隔" prop="upload_state_time_interval">
-        <Input
-          v-model="form.upload_state_time_interval"
-          placeholder="Enter something..."
-        ></Input>
+          v-model.number="form.download_game_list_interval"
+          :placeholder="
+            this.$t('Download') +
+              this.$t('Game') +
+              this.$t('List') +
+              this.$t('interval')
+          "
+        >
+          <span slot="append">{{ $t("Sec") }}</span></Input
+        >
       </FormItem>
       <FormItem
-        label="同步运行配置状态时间间隔"
+        :label="
+          this.$t('Reporting') +
+            this.$t('Runing') +
+            this.$t('Status') +
+            this.$t('interval')
+        "
+        prop="upload_state_time_interval"
+      >
+        <Input
+          v-model.number="form.upload_state_time_interval"
+          :placeholder="
+            this.$t('Reporting') +
+              this.$t('Runing') +
+              this.$t('Status') +
+              this.$t('interval')
+          "
+        >
+          <span slot="append">{{ $t("Sec") }}</span></Input
+        >
+      </FormItem>
+      <FormItem
+        :label="
+          this.$t('Sync') +
+            this.$t('RunConfig') +
+            this.$t('Status') +
+            this.$t('interval')
+        "
         prop="sync_config_time_interval"
       >
         <Input
-          v-model="form.sync_config_time_interval"
-          placeholder="Enter something..."
-        ></Input>
+          v-model.number="form.sync_config_time_interval"
+          :placeholder="
+            this.$t('Sync') +
+              this.$t('RunConfig') +
+              this.$t('Status') +
+              this.$t('interval')
+          "
+          ><span slot="append">{{ $t("Sec") }}</span></Input
+        >
       </FormItem>
-      <FormItem label="运行匿名登录" prop="line_type_id">
-        <Select v-model="form.allow_anoymous_login">
-          <Option :value="1">运行</Option>
-          <Option :value="0">禁止</Option>
+      <FormItem
+        :label="this.$t('Anonymous') + this.$t('Login')"
+        prop="allow_anoymous_login"
+      >
+        <Select v-model.number="form.allow_anoymous_login">
+          <Option :value="1">{{ $t("Allow") }}</Option>
+          <Option :value="0">{{ $t("Prohibit") }}</Option>
         </Select>
       </FormItem>
       <FormItem>
@@ -41,11 +85,14 @@
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ $t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
-            <Button type="primary" :disabled="loading" @click="handleRetrun()"
-              >返回</Button
+            <Button
+              type="primary"
+              :disabled="loading"
+              @click="handleRetrun()"
+              >{{ $t("Back") }}</Button
             >
           </div>
         </div>
@@ -56,10 +103,8 @@
 
 <script>
 import {
-  getLineType,
-  getBTServerGroup,
-  getarea,
-  setRunConfig
+  setbtClientConfig
+  // getbtClientConfig
 } from "@/api/server";
 export default {
   name: "setRunConfig",
@@ -69,14 +114,39 @@ export default {
       form: {
         download_game_list_interval: "",
         upload_state_time_interval: "",
-        sync_config_time_interval: 1001,
+        sync_config_time_interval: "",
         allow_anoymous_login: ""
       },
       rule: {
-        name: [
+        download_game_list_interval: [
           {
             required: true,
-            message: "The name cannot be empty",
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        upload_state_time_interval: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        sync_config_time_interval: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        allow_anoymous_login: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
             trigger: "blur"
           }
         ]
@@ -87,16 +157,11 @@ export default {
     };
   },
   created() {
-    console.log(this.$route.query);
-    Promise.all([getLineType(), getBTServerGroup(), getarea()]).then(resp => {
-      this.LineType = resp[0].data;
-      this.form.line_type_id = this.LineType[0] && this.LineType[0].id;
-      this.ServerGroup = resp[1].data;
-      this.form.bt_server_group_id =
-        this.ServerGroup[0] && this.ServerGroup[1].id;
-      this.Area = resp[2].data;
-      console.log(this.Area);
-    });
+    for (const key in this.form) {
+      if (this.form.hasOwnProperty(key)) {
+        this.form[key] = this.$route.query[0][key];
+      }
+    }
   },
   methods: {
     handleSubmit(name) {
@@ -104,9 +169,11 @@ export default {
         if (valid) {
           try {
             this.loading = true;
-            await setRunConfig(this.form);
+            await setbtClientConfig(this.form);
+            this.$Message.info(this.$t("Set") + this.$t("Success"));
+            this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.info(this.$t("Set") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }
@@ -122,7 +189,6 @@ export default {
 
 <style lang="scss" scoped>
 .RunClientContainer {
-  width: 500px;
-  margin: 0 auto;
+  width: 700px;
 }
 </style>

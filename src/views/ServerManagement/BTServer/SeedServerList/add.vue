@@ -1,68 +1,61 @@
 <template>
   <div style="width:440px">
-    <Form ref="form" :model="form" :rules="rule" :label-width="180">
-      <FormItem label="IP" prop="ip">
-        <Input v-model="form.ip" type="text"> </Input>
-      </FormItem>
-      <FormItem label="名称" prop="name">
-        <Input v-model="form.name" type="text"> </Input>
-      </FormItem>
-      <FormItem label="是否允许做种" prop="enable">
-        <Select v-model="form.enable">
-          <Option :value="1">运行</Option>
-          <Option :value="0">禁用</Option>
-        </Select>
-      </FormItem>
-      <!-- <FormItem label="分组" prop="bt_server_group_id">
-        <Select v-model="form.bt_server_group_id">
-          <Option v-for="item in ServerGroup" :value="item.id" :key="item.id">{{
-            item.name
+    <Form ref="form" :model="form" :rules="rule" :label-width="180" label-colon>
+      <FormItem :label="this.$t('IP')" prop="ip">
+        <Select v-model="form.ip" :disabled="loading">
+          <Option v-for="item in BtServeIP" :value="item.ip" :key="item.id">{{
+            item.ip
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="地区" prop="area_code">
-        <Select v-model="form.area_code">
-          <Option v-for="item in Area" :value="item.Id" :key="item.Id">{{
-            item.Name
-          }}</Option>
+      <FormItem :label="this.$t('Group')" prop="bt_server_group_id">
+        <Input v-model="BtServerInof.bt_server_group" type="text" disabled>
+        </Input>
+      </FormItem>
+      <FormItem :label="this.$t('Region')" prop="area_code">
+        <Input v-model="BtServerInof.area_name" type="text" disabled> </Input>
+      </FormItem>
+      <FormItem :label="this.$t('Line') + this.$t('Type')" prop="line_type">
+        <Input v-model="BtServerInof.line_type" type="text" disabled> </Input>
+      </FormItem>
+      <FormItem :label="this.$t('Available')" prop="enable">
+        <Select v-model="BtServerInof.enable" disabled>
+          <Option :value="1">{{ $t("Enable") }}</Option>
+          <Option :value="0">{{ $t("Disabled") }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="线路类型" prop="line_type_id">
-        <Select v-model="form.line_type_id">
-          <Option v-for="item in LineType" :value="item.id" :key="item.id">{{
-            item.name
-          }}</Option>
-        </Select>
+      <FormItem
+        :label="this.$t('Last') + this.$t('Heartbeat') + this.$t('Time')"
+        prop="time"
+      >
+        <Input v-model="BtServerInof.last_heart_time" type="text" disabled>
+        </Input>
       </FormItem>
-      <FormItem label="最近心跳时间" prop="time">
-            <Input v-model="form.ip" type="text"> </Input>
+
+      <FormItem :label="this.$t('Exceptions')" prop="time">
+        <Input v-model="BtServerInof.except_count" type="text" disabled>
+        </Input>
       </FormItem>
-      <FormItem label="是否启用" prop="enable">
+      <FormItem :label="this.$t('Allow') + this.$t('Seeding')" prop="enable">
         <Select v-model="form.enable">
-          <Option :value="1">启用</Option>
-          <Option :value="0">禁用</Option>
+          <Option :value="1">{{ $t("Allow") }}</Option>
+          <Option :value="0">{{ $t("Prohibit") }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="异常数" prop="time">
-            <Input v-model="form.ip" type="text"> </Input>
-      </FormItem>
-         <FormItem label="是否允许做种" prop="enable">
-        <Select v-model="form.enable">
-          <Option :value="1">运行</Option>
-          <Option :value="0">禁用</Option>
-        </Select>
-      </FormItem> -->
       <FormItem>
         <div style="display:flex;">
           <Button
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ $t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
-            <Button type="primary" :disabled="loading" @click="handleRetrun()"
-              >返回</Button
+            <Button
+              type="primary"
+              :disabled="loading"
+              @click="handleRetrun()"
+              >{{ $t("Back") }}</Button
             >
           </div>
         </div>
@@ -72,9 +65,7 @@
 </template>
 
 <script>
-import {
-  addDoSeedServer
-} from "@/api/server";
+import { addDoSeedServer, getBTServer } from "@/api/server";
 export default {
   name: "SeedServerListadd",
   data() {
@@ -83,11 +74,10 @@ export default {
       form: {
         ip: "",
         name: "",
-        enable: "",
-        area_code:1001
+        enable: 1
       },
       rule: {
-        name: [
+        ip: [
           {
             required: true,
             message: "The name cannot be empty",
@@ -97,11 +87,39 @@ export default {
       },
       ServerGroup: [],
       LineType: [],
-      Area: []
+      Area: [],
+      BtServe: "",
+      BtServeIP: []
     };
   },
+  computed: {
+    BtServerInof: function() {
+      if (this.BtServeIP.length > 0) {
+        return this.BtServeIP.filter(item => {
+          return item.ip === this.form.ip;
+        })[0];
+      } else {
+        return {
+          last_heart_time: "",
+          except_count: "",
+          line_type: "",
+          bt_server_group: "",
+          enable: "",
+          area_name: ""
+        };
+      }
+    }
+  },
   created() {
-
+    this.HandleGetBTServer({
+      offset: 0,
+      limit: 10000,
+      type: "",
+      groupid: "",
+      linetypeid: "",
+      ip: "",
+      orderby: ""
+    });
   },
   methods: {
     handleSubmit(name) {
@@ -110,13 +128,65 @@ export default {
           try {
             this.loading = true;
             await addDoSeedServer(this.form);
+            this.$Message.success(this.$t("Add") + this.$t("Success"));
+            this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.error(this.$t("Add") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }
         }
       });
+    },
+
+    async HandleGetBTServer({
+      offset = 0,
+      limit = 10000,
+      type = "",
+      groupid = "",
+      linetypeid = "",
+      ip = "",
+      orderby = ""
+    }) {
+      this.loading = true;
+      try {
+        let resp = await getBTServer({
+          offset,
+          limit,
+          type,
+          groupid,
+          linetypeid,
+          ip,
+          orderby
+        });
+        this.BtServe = resp.data.data.data;
+        if (this.BtServe) {
+          this.BtServe.forEach(item => {
+            if (item.type === 0) {
+              this.BtServeIP.push({
+                id: item.id,
+                ip: item.ip,
+                last_heart_time: item.last_heart_time,
+                except_count: item.except_count,
+                line_type: item.line_type,
+                bt_server_group: item.bt_server_group,
+                enable: item.enable,
+                area_name: item.area_name
+              });
+            }
+          });
+        }
+      } catch (error) {
+        this.$Message.error(
+          this.$t("Get") +
+            this.$t("Seeding") +
+            this.$t("Server") +
+            this.$t("Failed")
+        );
+      } finally {
+        this.form.ip = this.BtServeIP[0].ip;
+        this.loading = false;
+      }
     },
     handleRetrun() {
       this.$router.go(-1);

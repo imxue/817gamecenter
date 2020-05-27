@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import defaultLayot from "../layout/index.vue";
-import About from "../views/About.vue";
+// import About from "../views/About.vue";
+import User from "../views/User/index.vue";
 import nullLayout from "../layout/null.vue";
 import LineType from "../views/ServerManagement/BasicSetting/LineType/index.vue";
 import BtServerGroup from "../views/ServerManagement/BTServer/Group/index.vue";
@@ -16,9 +17,10 @@ const routes = [
     redirect: "/ServerManagement",
     children: [
       {
-        path: "/ServerManagement",
+        path: "/GameManagement",
         meta: {
-          title: "服务器管理",
+          title: "GameManagement",
+          show: true,
           index: "0"
         },
         component: nullLayout,
@@ -26,16 +28,251 @@ const routes = [
           {
             path: "",
             meta: {
-              title: "基础设置"
+              title: "BasicSetting",
+              show: true
             },
-            redirect: { name: "/ServerManagement/LineType" },
+            redirect: "/GameManagement/gamecompany",
             component: nullLayout,
             children: [
               {
-                path: "/ServerManagement/LineType",
-                name: "/ServerManagement/LineType",
+                path: "/GameManagement/gamecompany",
+                name: "/GameManagement/gamecompany",
                 meta: {
-                  title: "线路类型",
+                  title: "GameCompany",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamecompany/index.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/gamecompany/add",
+                name: "/GameManagement/gamecompany/add",
+                meta: {
+                  title: "Add",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamecompany/add.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/gamecompany/edit",
+                name: "edit",
+                meta: {
+                  title: "Edit",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamecompany/edit.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/Gamegroup",
+                name: "/GameManagement/Gamegroup",
+                meta: {
+                  title: "Gamegroup",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamegroup/index.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/Gamegroup/edit",
+                name: "GamegroupEdit",
+                meta: {
+                  title: "Edit",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamegroup/edit.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/Gamegroup/add",
+                name: "add",
+                meta: {
+                  title: "Add",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamegroup/add.vue"
+                  )
+              }
+              // {
+              //   path: "/GameManagement/GameGroupBlacklist",
+              //   name: "/GameManagement/GameGroupBlacklist",
+              //   meta: {
+              //     title: "游戏分组黑名单",
+              //     show: true
+              //   },
+              //   component: () =>
+              //     import(
+              //       /* webpackChunkName: "black" */ "../views/GameManagement/BasicSetting/GameGroupBlacklist/index.vue"
+              //     )
+              // },
+              // {
+              //   path: "/GameManagement/GameGroupBlacklist/edit",
+              //   name: "/GameManagement/GameGroupBlacklist/edit",
+              //   meta: {
+              //     title: "游戏分组黑名单",
+              //     show: false
+              //   },
+              //   component: () =>
+              //     import(
+              //       /* webpackChunkName: "black" */ "../views/GameManagement/BasicSetting/GameGroupBlacklist/edit.vue"
+              //     )
+              // },
+              // {
+              //   path: "/GameManagement/GameGroupBlacklist/add",
+              //   name: "/GameManagement/GameGroupBlacklist/add",
+              //   meta: {
+              //     title: "游戏分组黑名单",
+              //     show: false
+              //   },
+              //   component: () =>
+              //     import(
+              //       /* webpackChunkName: "black" */ "../views/GameManagement/BasicSetting/GameGroupBlacklist/add.vue"
+              //     )
+              // }
+            ]
+          },
+          {
+            path: "GameList",
+            component: nullLayout,
+            meta: {
+              title: "GameList",
+              show: true
+            },
+            children: [
+              {
+                path: "/GameManagement/GameList",
+                name: "/GameManagement/GameList",
+                meta: {
+                  title: "GameList",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/GameManagement/GameList/List/index.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/GameList/add",
+                name: "add",
+                meta: {
+                  title: "Add",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/GameManagement/GameList/List/add.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/GameList/edit",
+                name: "edit",
+                meta: {
+                  title: "Edit",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/GameManagement/GameList/List/edit.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/GameStrategy",
+                name: "/GameManagement/GameStrategy",
+                meta: {
+                  title: "GameStrategy",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/GameManagement/GameList/ChangeStrategy/index.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/GameStrategy/add",
+                name: "/GameManagement/GameStrategy/add",
+                meta: {
+                  title: "Add",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "add" */ "../views/GameManagement/GameList/ChangeStrategy/add.vue"
+                  )
+              },
+              {
+                path: "/GameManagement/GameStrategy/edit",
+                name: "/GameManagement/GameStrategy/edit",
+                meta: {
+                  title: "Edit",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/GameManagement/GameList/ChangeStrategy/edit.vue"
+                  )
+              }
+            ]
+          },
+          {
+            path: "BtSrv",
+            component: nullLayout,
+            meta: {
+              title: "BtSrvDistributeGame",
+              show: true
+            },
+            children: [
+              {
+                path: "/GameManagement/BtSrv",
+                name: "/GameManagement/BtSrv",
+                meta: {
+                  title: "BtSrvGameStatus",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/GameManagement/BtSrv/GameState/index.vue"
+                  )
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: "/ServerManagement",
+        meta: {
+          title: "ServerManagement",
+          index: "1"
+        },
+        component: nullLayout,
+        redirect: "/ServerManagement/BasicSetting",
+        children: [
+          {
+            path: "",
+            name: "BasicSetting",
+            meta: {
+              title: "BasicSetting"
+            },
+            redirect: "/ServerManagement/BasicSetting/LineType",
+            component: nullLayout,
+            children: [
+              {
+                path: "/ServerManagement/BasicSetting/LineType",
+                name: "LineType",
+                meta: {
+                  title: "LineType",
                   show: true
                 },
                 component: LineType
@@ -44,7 +281,8 @@ const routes = [
                 path: "/ServerManagement/LineType/edit",
                 name: "editLineType",
                 meta: {
-                  show: false
+                  show: false,
+                  title: "Edit"
                 },
                 component: () =>
                   import(
@@ -55,7 +293,8 @@ const routes = [
                 path: "/ServerManagement/LineType/add",
                 name: "addLineType",
                 meta: {
-                  show: false
+                  show: false,
+                  title: "Add"
                 },
                 component: () =>
                   import(
@@ -68,24 +307,25 @@ const routes = [
             path: "BTserver",
             component: nullLayout,
             meta: {
-              title: "BT server",
+              title: "BTServer",
               show: true
             },
+            name: "BTserver",
             children: [
               {
                 path: "/ServerManagement/BtServerGroup",
-                name: "/ServerManagement/BtServerGroup",
+                name: "BTserverGroup",
                 meta: {
-                  title: "Bt Server分组",
+                  title: "BtServerGroup",
                   show: true
                 },
                 component: BtServerGroup
               },
               {
                 path: "/ServerManagement/BtServerGroup/add",
-                name: "/ServerManagement/BtServerGroup/add",
+                name: "BTserverGroupList",
                 meta: {
-                  title: "add Bt Server分组",
+                  title: "Add",
                   show: false
                 },
                 component: () =>
@@ -97,7 +337,7 @@ const routes = [
                 path: "/ServerManagement/BtServerGroup/edit",
                 name: "/ServerManagement/BtServerGroup/edit",
                 meta: {
-                  title: "edit Bt Server分组",
+                  title: "Edit",
                   show: false
                 },
                 component: () =>
@@ -107,18 +347,19 @@ const routes = [
               },
               {
                 path: "/ServerManagement/BtServerCategory",
-                name: "/ServerManagement/BtServerCategory",
+                name: "BtServerCategory",
                 meta: {
-                  title: "Bt Server类别",
+                  title: "BtServerList",
                   show: true
                 },
-                component: BtServerCategory,
+                component: BtServerCategory
               },
               {
                 path: "/ServerManagement/BtServerCategory/add",
-                name: "/ServerManagement/BtServerCategory/add",
+                name: "BtServerCategoryadd",
                 meta: {
-                  show: false
+                  show: false,
+                  title: "Add"
                 },
                 component: () =>
                   import(
@@ -126,10 +367,23 @@ const routes = [
                   )
               },
               {
-                path: "/ServerManagement/BtServerCategory/edit",
-                name: "/ServerManagement/BtServerCategory/edit",
+                path: "/ServerManagement/BtServerCategory/Gamelist",
+                name: "BtServerGameList",
                 meta: {
-                  show: false
+                  show: false,
+                  title: "游戏详情"
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "addBtServerCategory" */ "../views/ServerManagement/BTServer/Category/GameList.vue"
+                  )
+              },
+              {
+                path: "/ServerManagement/BtServerCategory/edit",
+                name: "BtServerCategoryedit",
+                meta: {
+                  show: false,
+                  title: "Edit"
                 },
                 component: () =>
                   import(
@@ -138,9 +392,10 @@ const routes = [
               },
               {
                 path: "/ServerManagement/BtServerCategory/setRunConfig",
-                name: "/ServerManagement/BtServerCategory/setRunConfig",
+                name: "BtServerCategorysetRunConfig",
                 meta: {
-                  show: false
+                  show: false,
+                  title: "SetRunConfig"
                 },
                 component: () =>
                   import(
@@ -151,44 +406,44 @@ const routes = [
                 path: "/ServerManagement/BtServer/SeedServerList",
                 name: "/ServerManagement/BtServer/SeedServerList",
                 meta: {
-                  title: "做种服务器列表",
+                  title: "SeedServerList",
                   show: true
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTServer/SeedServerList/index.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTServer/SeedServerList/index.vue"
+                  )
               },
               {
                 path: "/ServerManagement/BtServer/SeedServerList/add",
                 name: "/ServerManagement/BtServer/SeedServerList/add",
                 meta: {
-                  title: "做种服务器列表",
+                  title: "Add",
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "addSeedServerList" */ "../views/ServerManagement/BTServer/SeedServerList/add.vue"
-                )
+                  import(
+                    /* webpackChunkName: "addSeedServerList" */ "../views/ServerManagement/BTServer/SeedServerList/add.vue"
+                  )
               },
               {
                 path: "/ServerManagement/BtServer/SeedServerList/edit",
                 name: "/ServerManagement/BtServer/SeedServerList/edit",
                 meta: {
-                  title: "做种服务器列表",
+                  title: "Edit",
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTServer/SeedServerList/index.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTServer/SeedServerList/index.vue"
+                  )
               }
             ]
           },
           {
             path: "",
             meta: {
-              title: "BT Client"
+              title: "BTClient"
             },
             component: nullLayout,
             children: [
@@ -196,25 +451,25 @@ const routes = [
                 path: "/ServerManagement/BTClient",
                 name: "/ServerManagement/BTClient",
                 meta: {
-                  title: "BT Client 设置",
+                  title: "BTClient",
                   show: true
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTClient/Set/index.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTClient/Set/index.vue"
+                  )
               },
               {
                 path: "/ServerManagement/BTClient/setRunConfig",
                 name: "/ServerManagement/BTClient/setRunConfig",
                 meta: {
-                  title: "BT Client",
+                  title: "SetRunConfig",
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTClient/Set/setRunConfig.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/BTClient/Set/setRunConfig.vue"
+                  )
               }
             ]
           },
@@ -229,13 +484,13 @@ const routes = [
                 path: "/ServerManagement/Tracker",
                 name: "/ServerManagement/Tracker",
                 meta: {
-                  title: "Tracker 列表",
+                  title: "Tracker",
                   show: true
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/index.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/index.vue"
+                  )
               },
               {
                 path: "/ServerManagement/Tracker/add",
@@ -245,9 +500,9 @@ const routes = [
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/add.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/add.vue"
+                  )
               },
               {
                 path: "/ServerManagement/Tracker/edit",
@@ -257,9 +512,9 @@ const routes = [
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/edit.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/edit.vue"
+                  )
               },
               {
                 path: "/ServerManagement/Tracker/setRunConfig",
@@ -269,16 +524,16 @@ const routes = [
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/setRunConfig.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/Tracker/List/setRunConfig.vue"
+                  )
               }
             ]
           },
           {
             path: "",
             meta: {
-              title: "FTP Server",
+              title: "FTPServer",
               show: true
             },
             component: nullLayout,
@@ -287,44 +542,44 @@ const routes = [
                 path: "/ServerManagement/FTPServer",
                 name: "/ServerManagement/FTPServer",
                 meta: {
-                  title: "FTPServer服务器列表",
+                  title: "FTPServer",
                   show: true
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/FTPServer/List/index.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/FTPServer/List/index.vue"
+                  )
               },
               {
                 path: "/ServerManagement/FTPServer/add",
                 name: "/ServerManagement/FTPServer/add",
                 meta: {
-                  title: "addFTPServer",
+                  title: "Add",
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/FTPServer/List/add.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/FTPServer/List/add.vue"
+                  )
               },
               {
                 path: "/ServerManagement/FTPServer/edit",
                 name: "/ServerManagement/FTPServer/edit",
                 meta: {
-                  title: "editFTPServer",
+                  title: "Edit",
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/FTPServer/List/edit.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/FTPServer/List/edit.vue"
+                  )
               }
             ]
           },
           {
             path: "",
             meta: {
-              title: "集群登录服务器",
+              title: "ClusterLoginServer",
               show: true
             },
             component: nullLayout,
@@ -333,172 +588,59 @@ const routes = [
                 path: "/ServerManagement/ClusterLoginServer",
                 name: "/ServerManagement/ClusterLoginServer",
                 meta: {
-                  title: "集群登录服务器列表",
+                  title: "ClusterLoginServer",
                   show: true
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/ClusterLoginServer/List/index.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/ClusterLoginServer/List/index.vue"
+                  )
               },
               {
                 path: "/ServerManagement/ClusterLoginServer/add",
                 name: "/ServerManagement/ClusterLoginServer/add",
                 meta: {
-                  title: "集群登录服务器列表",
+                  title: "Add",
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/ClusterLoginServer/List/add.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/ClusterLoginServer/List/add.vue"
+                  )
               },
               {
                 path: "/ServerManagement/ClusterLoginServer/edit",
                 name: "/ServerManagement/ClusterLoginServer/edit",
                 meta: {
-                  title: "集群登录服务器列表",
+                  title: "Edit",
                   show: false
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/ClusterLoginServer/List/edit.vue"
-                )
+                  import(
+                    /* webpackChunkName: "SeedServerList" */ "../views/ServerManagement/ClusterLoginServer/List/edit.vue"
+                  )
               }
             ]
           }
         ]
       },
-      {
-        path: "/GameManagement",
-        meta: {
-          title: "游戏管理",
-          show: true,
-          index: "1"
-        },
-        component: nullLayout,
-        children: [
-          {
-            path: "",
-            meta: {
-              title: "基础设置",
-              show: true
-            },
-            redirect: "/GameManagement/gamecompany",
-            component: nullLayout,
-            children: [
-              {
-                path: "GameCompany",
-                name: "GameCompany",
-                meta: {
-                  title: "游戏公司",
-                  show: true
-                },
-                component: () =>
-                import(
-                  /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamecompany/index.vue"
-                )
-              },
-              {
-                path: "BasicSettings2",
-                name: "BasicSettings2",
-                meta: {
-                  title: "游戏分组",
-                  show: true
-                },
-                component: () =>
-                import(
-                  /* webpackChunkName: "gameCompany" */ "../views/GameManagement/BasicSetting/Gamegroup/index.vue"
-                )
-              },
-              {
-                path: "BasicSettings222222",
-                name: "BasicSettings222222",
-                meta: {
-                  title: "游戏分组黑名单",
-                  show: true
-                },
-                component: () =>
-                import(
-                  /* webpackChunkName: "black" */ "../views/GameManagement/BasicSetting/GameGroupBlacklist/index.vue"
-                )
-              }
-            ]
-          },
-          {
-            path: "GameList",
-            component: nullLayout,
-            meta: {
-              title: "游戏列表",
-              show: true
-            },
-            children: [
-              {
-                path: "/GameManagement/GameList",
-                name: "/GameManagement/GameList",
-                meta: {
-                  title: "游戏列表",
-                  show: true
-                },
-                component: () =>
-                import(
-                  /* webpackChunkName: "black" */ "../views/GameManagement/GameList/List/index.vue"
-                )
-              },
 
-              {
-                path: "/GameManagement/GameStrategy",
-                name: "/GameManagement/GameStrategy",
-                meta: {
-                  title: "游戏版本变更策略",
-                  show: true
-                },
-                component: () =>
-                import(
-                  /* webpackChunkName: "black" */ "../views/GameManagement/GameList/ChangeStrategy/index.vue"
-                )
-              }
-            ]
-          },
-          {
-            path: "BtSrv",
-            component: nullLayout,
-            meta: {
-              title: "BtSrv分配游戏",
-              show: true
-            },
-            children: [
-              {
-                path: "/GameManagement/BtSrv",
-                name: "/GameManagement/BtSrv",
-                meta: {
-                  title: "BtSrv游戏状态",
-                  show: true
-                },
-                component: () =>
-                import(
-                  /* webpackChunkName: "black" */ "../views/GameManagement/BtSrv/GameState/index.vue"
-                )
-              }
-            ]
-          }
-        ]
-      },
       {
         path: "/EventMonitoring",
         meta: {
-          title: "事件监控",
+          title: "EventMonitoring",
           show: true,
           index: "2"
         },
+        redirect: "/EventMonitoring/ConditionMonitoring",
         component: nullLayout,
         children: [
           {
-            path: "",
+            path: "/EventMonitoring/ConditionMonitoring",
             component: nullLayout,
             redirect: "/EventMonitoring/ConditionMonitoring/ServerState",
             meta: {
-              title: "状态监控",
+              title: "ServerState",
               show: true
             },
             children: [
@@ -506,143 +648,210 @@ const routes = [
                 path: "/EventMonitoring/ConditionMonitoring/ServerState",
                 name: "/EventMonitoring/ConditionMonitoring/ServerState",
                 meta: {
-                  title: "服务器状态",
+                  title: "ServerState",
                   show: true
                 },
                 component: () =>
-                import(
-                  /* webpackChunkName: "black" */ "../views/EventMonitor/ConditionMonitoring/ServerState/index.vue"
-                )
+                  import(
+                    /* webpackChunkName: "black" */ "../views/EventMonitor/ConditionMonitoring/ServerState/index.vue"
+                  )
               },
               {
-                path: "/EventMonitoring/GameState",
-                name: "/EventMonitoring/GameState",
+                path:
+                  "/EventMonitoring/ConditionMonitoring/ServerState/ServerDetails",
+                name: "Details",
                 meta: {
-                  title: "游戏状态",
-                  show: true
-                }
+                  title: "Details",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/EventMonitor/ConditionMonitoring/ServerState/ServerDetails.vue"
+                  )
               },
               {
-                path: "/EventMonitoring/ListOfCurrentValidData",
-                name: "/EventMonitoring/ListOfCurrentValidData",
+                path: "/EventMonitoring/ConditionMonitoring/GameState",
+                name: "/EventMonitoring/ConditionMonitoring/GameState",
                 meta: {
-                  title: "当前有效数据清单",
+                  title: "GameState",
                   show: true
-                }
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/EventMonitor/ConditionMonitoring/GameState/index.vue"
+                  )
+              },
+              {
+                path:
+                  "/EventMonitoring/ConditionMonitoring/GameState/GameDtails",
+                name:
+                  "/EventMonitoring/ConditionMonitoring/GameState/GameDetails",
+                meta: {
+                  title: "GameStateDetails",
+                  show: false
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/EventMonitor/ConditionMonitoring/GameState/GameDetails.vue"
+                  )
+              },
+              {
+                path:
+                  "/EventMonitoring/ConditionMonitoring/ListOfCurrentValidData",
+                name:
+                  "/EventMonitoring/ConditionMonitoring/ListOfCurrentValidData",
+                meta: {
+                  title: "ListOfCurrentValidData",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/EventMonitor/ConditionMonitoring/ListOfValidData/index.vue"
+                  )
               }
             ]
           },
           {
-            path: "",
+            path: "/EventMonitoring/EventQuery",
             component: nullLayout,
-            redirect: "/EventMonitoring/xxxx",
+            redirect: "/EventMonitoring/EventQuery/gameDoseed",
             meta: {
-              title: "事件查询",
+              title: "EventQuery",
               show: true
             },
             children: [
               {
-                path: "/EventMonitoring/xxxx",
-                name: "/EventMonitoring/xxxx",
+                path: "/EventMonitoring/EventQuery/gameDoseed",
+                name: "GameDoseedHistory",
                 meta: {
-                  title: "游戏做种历史",
+                  title: "GameDoseed",
                   show: true
-                }
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "EventQuery" */ "../views/EventMonitor/EventQuery/GameSeedHistory/index.vue"
+                  )
               },
+              // {
+              //   path: "/EventMonitoring/GameState",
+              //   name: "/EventMonitoring/GameState",
+              //   meta: {
+              //     title: "游戏BtSrv同步日志",
+              //     show: true
+              //   }
+              // },
               {
-                path: "/EventMonitoring/GameState",
-                name: "/EventMonitoring/GameState",
+                path: "/EventMonitoring/EventQuery/GameProduceJSOMLog",
+                name: "/EventMonitoring/EventQuery/GameProduceJSOMLog",
                 meta: {
-                  title: "游戏BtSrv同步日志",
+                  title: "GameProduceJSOMLog",
                   show: true
-                }
-              },
-              {
-                path: "/EventMonitoring/ListOfCurrentValidData",
-                name: "/EventMonitoring/ListOfCurrentValidData",
-                meta: {
-                  title: "游戏json文件生成日志",
-                  show: true
-                }
-              },
-              {
-                path: "/EventMonitoring/ListOfCurrentValidData",
-                name: "/EventMonitoring/ListOfCurrentValidData",
-                meta: {
-                  title: "FTP文件变更日志",
-                  show: true
-                }
-              },
-              {
-                path: "/EventMonitoring/Serverlog",
-                name: "/EventMonitoring/Serverlog",
-                meta: {
-                  title: "服务器异常日志",
-                  show: true
-                }
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "EventQuery" */ "../views/EventMonitor/EventQuery/GameProduceJSOMLog/index.vue"
+                  )
               }
-            ]
-          }
-        ]
-      },
-      {
-        path: "/base",
-        meta: {
-          title: "基础设置",
-          show: true,
-          index: "3"
-        },
-        component: nullLayout,
-        children: [
-          {
-            path: "",
-            meta: {
-              title: "用户管理",
-              show: true
-            },
-            component: nullLayout,
-            children: [
-              {
-                path: "",
-                meta: {
-                  title: "授权类表",
-                  show: true
-                },
-                component: About
-              },
-              {
-                path: "",
-                meta: {
-                  title: "角色列表"
-                },
-                component: About
-              },
-              {
-                path: "",
-                meta: {
-                  title: "用户列表",
-                  show: true
-                },
-                component: About
-              }
+              // {
+              //   path: "/EventMonitoring/ListOfCurrentValidData",
+              //   name: "/EventMonitoring/ListOfCurrentValidData",
+              //   meta: {
+              //     title: "FTP文件变更日志",
+              //     show: true
+              //   },
+              //   component: About
+              // },
+              // {
+              //   path: "/EventMonitoring/Serverlog",
+              //   name: "/EventMonitoring/Serverlog",
+              //   meta: {
+              //     title: "服务器异常日志",
+              //     show: true
+              //   },
+              //   component: About
+              // }
             ]
           }
         ]
       }
+      // {
+      //   path: "/base",
+      //   meta: {
+      //     title: "基础设置",
+      //     show: true,
+      //     index: "3"
+      //   },
+      //   component: nullLayout,
+      //   children: [
+      //     {
+      //       path: "",
+      //       meta: {
+      //         title: "用户管理",
+      //         show: true
+      //       },
+      //       component: nullLayout,
+      //       children: [
+      //         {
+      //           path: "",
+      //           meta: {
+      //             title: "授权类表",
+      //             show: true
+      //           },
+      //           component: () =>
+      //             import(
+      //               /* webpackChunkName: "Role" */ "../views/BasicSetting/Role/index.vue"
+      //             )
+      //         },
+      //         {
+      //           path: "",
+      //           meta: {
+      //             title: "角色列表"
+      //           },
+      //           component: About
+      //         },
+      //         {
+      //           path: "",
+      //           meta: {
+      //             title: "用户列表",
+      //             show: true
+      //           },
+      //           component: About
+      //         }
+      //       ]
+      //     }
+      //   ]
+      // }
+    ]
+  },
+  {
+    path: "/User",
+    name: "User",
+    redirect: "/User/login",
+    component: User,
+    children: [
+      {
+        path: "/User/login",
+        component: () =>
+          import(/* webpackChunkName: "login" */ "../components/login.vue")
+      },
+      {
+        path: "/User/forgetPassword",
+        component: () =>
+          import(
+            /* webpackChunkName: "forgetPassword" */ "../components/forgetPassword.vue"
+          )
+      },
+      {
+        path: "/User/regist",
+        component: () =>
+          import(/* webpackChunkName: "regist" */ "../components/regist.vue")
+      }
     ]
   }
-  // {
-  //   path: "/about",
-  //   name: "about",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/About.vue")
-  // }
 ];
 
 const router = new VueRouter({
+  mode: "hash",
   routes
 });
 

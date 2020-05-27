@@ -1,16 +1,22 @@
 <template>
   <div style="width:440px">
-    <Form ref="form" :model="data" :rules="rule" :label-width="80">
-     <FormItem label="Id" prop="id">
-        <Input type="text" v-model="data.id"  disabled></Input>
+    <Form ref="form" :model="data" :rules="rule" :label-width="100" label-colon>
+      <FormItem label="ID" prop="id">
+        <Input type="text" v-model="data.id" disabled></Input>
       </FormItem>
-      <FormItem label="线路名称" prop="name">
-        <Input type="text" v-model="data.name" ></Input>
+      <FormItem :label="this.$t('ISP') + this.$t('Name')" prop="name">
+        <Input type="text" v-model="data.name"></Input>
       </FormItem>
-      <FormItem label="状态" prop="enable">
-        <Select v-model="data.enable">
-          <Option :value="1">启用</Option>
-          <Option :value="0">禁用</Option>
+      <FormItem :label="this.$t('DefaultLine')" prop="is_default">
+        <Select v-model="data.is_default">
+          <Option :value="1">{{ $t("Enable") }}</Option>
+          <Option :value="0">{{ $t("Disabled") }}</Option>
+        </Select>
+      </FormItem>
+      <FormItem :label="this.$t('Available')" prop="enable">
+        <Select v-model="data.enable" :disabled="disabled">
+          <Option :value="1">{{ $t("Enable") }}</Option>
+          <Option :value="0">{{ $t("Disabled") }}</Option>
         </Select>
       </FormItem>
       <FormItem>
@@ -19,14 +25,14 @@
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ $t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
             <Button
               type="primary"
               :disabled="loading"
               @click="handleRetrun()"
-              >返回</Button
+              >{{ $t("Back") }}</Button
             >
           </div>
         </div>
@@ -36,35 +42,95 @@
 </template>
 
 <script>
-import { editLineType } from "@/api/server";
+import { editLineType, verifyDefaultUnique } from "@/api/server";
+import { mapState } from "vuex";
 export default {
   name: "LineTypeEdit",
   data() {
+    const validateLineName = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$t("Tgcncbe")));
+      } else if (this.LineType.some(item => item === value)) {
+        if (value === this.OldName) {
+          callback();
+        } else {
+          callback(new Error(this.$t("TLax")));
+        }
+      } else {
+        callback();
+      }
+    };
     return {
       loading: false,
+      OldName: "",
+      disabled: false,
       data: {
-        id:"",
+        id: "",
         name: "",
-        enable: ''
+        is_default: "",
+        enable: ""
       },
+      selfDefault: 0,
       rule: {
         name: [
           {
             required: true,
-            message: "The name cannot be empty",
+            validator: validateLineName,
             trigger: "blur"
           }
         ]
-      },
+      }
     };
   },
+  computed: {
+    ...mapState({
+      LineType: state => state.LineType,
+      IsDefaultLine: state => state.IsDefaultLine
+    })
+  },
   created() {
+    if (this.$route.query[0].id) {
+      this.data = this.$route.query[0];
 
-      if (this.$route.query[0].id) {
-          this.data= this.$route.query[0]
-      } else {
-        this.$router.go(-1)
+      this.srcdata = JSON.parse(JSON.stringify(this.$route.query[0]));
+      this.OldName = this.data.name;
+      this.selfDefault = this.data.is_default;
+    } else {
+      this.$router.go(-1);
+    }
+  },
+  watch: {
+    "data.is_default"(value) {
+      if (value === 1) {
+        this.data.enable = 1;
+        this.disabled = true;
+        if (this.selfDefault === 0) {
+          verifyDefaultUnique().then(
+            () => {},
+            () => {
+              this.$Modal.info({
+                title: "操作提示",
+                content: `已存在默认线路，默认线路为唯一。<br/> 如果您知晓您的操作<br/>请手动取消当前默认线路`,
+                onOk: () => {
+                  this.data.is_default = 0;
+                }
+              });
+            }
+          );
+        }
+      } else if (value === 0) {
+        if (this.IsDefaultLine.name) {
+          if (this.IsDefaultLine.name === this.data.name) {
+            this.$Modal.confirm({
+              title: "操作提示",
+              content: `已存在默认线路<br/>需要手动取消当前默认线路<br/><br/><code>此操作存在风险，请谨慎操作！</code>`,
+              cancelText: "关闭"
+            });
+          }
+        }
+        this.disabled = false;
       }
+    }
   },
   methods: {
     handleSubmit(name) {
@@ -72,11 +138,30 @@ export default {
         if (valid) {
           try {
             this.loading = true;
-            await editLineType(this.data)
-            this.$Message.success("修改成功")
-            this.$router.go(-1)
+            let params = {};
+            if (
+              this.srcdata.is_default === this.data.is_default &&
+              this.srcdata.name === this.data.name &&
+              this.srcdata.enable === this.data.enable
+            ) {
+              this.$Message.success(this.$t("Save") + this.$t("Success"));
+              this.$router.go(-1);
+              return;
+            }
+            if (this.srcdata.is_default === this.data.is_default) {
+              params = {
+                enable: this.data.enable,
+                id: this.data.id,
+                name: this.data.name
+              };
+            } else {
+              params = this.data;
+            }
+            await editLineType(params);
+            this.$Message.success(this.$t("Edit") + this.$t("Success"));
+            this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.error(this.$t("Edit") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }
@@ -84,7 +169,7 @@ export default {
       });
     },
     handleRetrun() {
-        this.$router.go(-1)
+      this.$router.go(-1);
     }
   }
 };

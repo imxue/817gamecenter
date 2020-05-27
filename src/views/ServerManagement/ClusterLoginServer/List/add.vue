@@ -1,29 +1,50 @@
 <template>
   <div style="width:440px">
     <Form ref="form" :model="form" :rules="rule" :label-width="80">
-      <FormItem label="类型" prop="type">
-       <Select v-model.number="form.type">
-          <Option :value=1>1</Option>
-          <Option :value=0>0</Option>
+      <FormItem :label="this.$t('Type')" prop="type">
+        <Select v-model.number="form.type">
+          <Option :value="0"
+            >{{ this.$t("Cluster") }}{{ this.$t("Login")
+            }}{{ this.$t("Server") }}</Option
+          >
+          <Option :value="1"
+            >{{ this.$t("Cluster") }}{{ this.$t("Comm")
+            }}{{ this.$t("Server") }}</Option
+          >
+          <Option :value="3"
+            >{{ this.$t("Pierced") }}{{ this.$t("Comm") }}</Option
+          >
+          <Option :value="4"
+            >{{ this.$t("Pierced") }}{{ this.$t("Login") }}</Option
+          >
+          <Option :value="5"
+            >{{ this.$t("Upload") }}{{ this.$t("Dispatch") }}</Option
+          >
+          <Option :value="6"
+            >{{ this.$t("Efficiency") }}{{ this.$t("Statistics") }}</Option
+          >
+          <Option :value="7"
+            >{{ this.$t("Port") }}{{ this.$t("Detection") }}</Option
+          >
         </Select>
       </FormItem>
       <FormItem label="IP" prop="server_ip">
         <Input type="text" v-model="form.server_ip"> </Input>
       </FormItem>
-      <FormItem label="端口" prop="port">
+      <FormItem :label="this.$t('Port')" prop="port">
         <Input type="text" v-model.number="form.port"> </Input>
       </FormItem>
-      <FormItem label="线路类型" prop="line_type_id">
-        <Select v-model="form.line_type_id">
+      <FormItem :label="this.$t('Line') + this.$t('Type')" prop="line_type_id">
+        <Select v-model="form.line_type_id" :disabled="disabled">
           <Option v-for="item in LineType" :value="item.id" :key="item.id">{{
             item.name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="是否启用" prop="enable">
-        <Select v-model="form.enable">
-          <Option :value="1">启用</Option>
-          <Option :value="0">禁用</Option>
+      <FormItem :label="this.$t('Available')" prop="enable">
+        <Select v-model.number="form.status">
+          <Option :value="1">{{ $t("Enable") }}</Option>
+          <Option :value="0">{{ $t("Disabled") }}</Option>
         </Select>
       </FormItem>
 
@@ -33,11 +54,14 @@
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ $t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
-            <Button type="primary" :disabled="loading" @click="handleRetrun()"
-              >返回</Button
+            <Button
+              type="primary"
+              :disabled="loading"
+              @click="handleRetrun()"
+              >{{ $t("Back") }}</Button
             >
           </div>
         </div>
@@ -47,24 +71,55 @@
 </template>
 
 <script>
-import { addClusterLginServer, getLineType } from "@/api/server";
+import { addClusterLginServer, getAllenabled } from "@/api/server";
 export default {
   name: "addClusterLginServer",
   data() {
     return {
       loading: false,
       form: {
-        type: "",
+        type: 0,
         server_ip: "",
-        port: "",
+        port: 0,
         line_type_id: "",
-        enable: ""
+        status: 1
       },
       rule: {
-        name: [
+        type: [
           {
             required: true,
-            message: "The name cannot be empty",
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        server_ip: [
+          {
+            required: true,
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        port: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        line_type_id: [
+          {
+            required: true,
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        status: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
             trigger: "blur"
           }
         ]
@@ -82,8 +137,10 @@ export default {
           try {
             this.loading = true;
             await addClusterLginServer(this.form);
+            this.$Message.success(this.$t("Add") + this.$t("Success"));
+            this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.success(this.$t("Add") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }
@@ -92,10 +149,16 @@ export default {
     },
     async HandleGetLineType() {
       try {
-        let resp = await getLineType();
-        this.LineType = resp.data;
+        this.disabled = true;
+        let resp = await getAllenabled();
+        this.LineType = resp.data.data;
+        this.form.line_type_id = this.LineType[0].id;
       } catch (error) {
-        console.log(error);
+        this.$Message.success(
+          this.$t("Get") + this.$t("Line") + this.$t("Type") + this.$t("Failed")
+        );
+      } finally {
+        this.disabled = false;
       }
     },
     handleRetrun() {

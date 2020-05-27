@@ -1,91 +1,191 @@
 <template>
   <div>
-    <Row :gutter="16">
-      <Col span="5">
-        <Select v-model="LineTypeId" @on-change="ChangeLineType">
+    <div>
+      <!-- <Select v-model="LineTypeId" @on-change="ChangeLineType">
           <Option v-for="item in LineType" :value="item.id" :key="item.id">{{
             item.name
           }}</Option>
-        </Select>
-      </Col>
-      <Col span="6">
-        <Input
-          search
-          enter-button="Search"
-          placeholder="输入IP地址进行搜索。。。"
-        />
-      </Col>
-    </Row>
-    <Row style="margin:10px 0;">
-      <Col span="2">
-        <router-link to="/ServerManagement/FTPServer/add">
-          <Button type="info">添加</Button>
-        </router-link>
-      </Col>
-      <Col span="2">
-        <Button type="info" @click="HandleEdit">编辑</Button>
-      </Col>
-    </Row>
+        </Select> -->
+      <Input
+        search
+        style="width:300px"
+        :enter-button="this.$t('Search')"
+        :placeholder="this.$t('Input') + this.$t('IP') + this.$t('Search')"
+        @on-search="HandleSearch"
+      />
+    </div>
+    <div style="margin:10px 0;">
+      <router-link
+        to="/ServerManagement/FTPServer/add"
+        style="marginRight:10px;"
+      >
+        <Button type="info">{{ $t("Add") }}</Button>
+      </router-link>
+      <Button type="info" @click="HandleEdit">{{ $t("Edit") }}</Button>
+    </div>
 
     <Table
+      size="small"
       :columns="columns"
       :data="data"
+      :loading="loading"
       border
       @on-selection-change="ChangeSelection"
     ></Table>
+    <Page
+      :total="pageinfo.count"
+      :page-size="limit"
+      style="margin-top:10px;float:right;"
+      @on-change="HandleChangePage"
+    />
   </div>
 </template>
 <script>
 import { getFtpServer, getLineType } from "@/api/server.js";
+import { parseTime } from "@/utils";
 export default {
   name: "TrackerIndex",
   data() {
     return {
+      loading: false,
+      pageinfo: {
+        page_index: 0,
+        page_size: 1,
+        count: 2
+      },
       columns: [
         {
           type: "selection",
           width: 60,
           align: "center"
         },
+        // {
+        //   // title: "FTP状态",
+        //   title: "FTP" + this.$t("Status"),
+        //   key: "ftp_status",
+        //   width: 110,
+        //   render: (h, params) => {
+        //     let isOnline = {
+        //       1: {
+        //         title: this.$t("Normal"),
+        //         color: "#52c41a"
+        //       },
+        //       0: {
+        //         title: this.$t("Abnormal"),
+        //         color: "#ffa39e"
+        //       }
+        //     };
+        //     return h(
+        //       "span",
+        //       {
+        //         style: {
+        //           color: isOnline[params.row.ftp_status].color || "-"
+        //         }
+        //       },
+        //       isOnline[params.row.ftp_status].title || "-"
+        //     );
+        //   }
+        // },
+        // {
+        //   title: "HTTP" + this.$t("Status"),
+        //   width: 120,
+        //   key: "http_status",
+        //   render: (h, params) => {
+        //     let isOnline = {
+        //       1: {
+        //         title: this.$t("Normal"),
+        //         color: "#52c41a"
+        //       },
+        //       0: {
+        //         title: this.$t("Abnormal"),
+        //         color: "#ffa39e"
+        //       }
+        //     };
+        //     return h(
+        //       "span",
+        //       {
+        //         style: {
+        //           color: isOnline[params.row.http_status].color || "-"
+        //         }
+        //       },
+        //       isOnline[params.row.http_status].title || "-"
+        //     );
+        //   }
+        // },
         {
-          title: "FTP状态",
-          key: "ftp_status"
+          title: this.$t("ExtranetDom") + "/" + this.$t("IP"),
+          key: "domain",
+          minWidth: 210
         },
         {
-          title: "HTTP状态",
-          key: "http_status"
+          title: this.$t("Port"),
+          key: "port",
+          minWidth: 90
         },
         {
-          title: "线路类型",
-          key: "line_type"
+          title: this.$t("Type"),
+          key: "type",
+          minWidth: 200,
+          render: (h, params) => {
+            let a = "";
+            switch (params.row.type) {
+              case 1:
+                a = h(
+                  "span",
+                  this.$t("Sync") + this.$t("Source") + this.$t("Server")
+                );
+                break;
+              case 0:
+                a = h(
+                  "span",
+                  this.$t("Passive") + this.$t("Source") + this.$t("Server")
+                );
+                break;
+              default:
+                a = h("span", params.row.type);
+                break;
+            }
+            return a;
+          }
         },
         {
-          title: "IP地址",
-          key: "ip"
+          title: this.$t("Available"),
+          key: "enable",
+          width: 120,
+          render: (h, params) => {
+            let isOnline = {
+              1: {
+                title: this.$t("Enable"),
+                color: "#52c41a"
+              },
+              0: {
+                title: this.$t("Disable"),
+                color: "#ffa39e"
+              }
+            };
+            return h(
+              "span",
+              {
+                style: {
+                  color: isOnline[params.row.enable].color || "-"
+                }
+              },
+              isOnline[params.row.enable].title || "-"
+            );
+          }
         },
         {
-          title: "外网域名/IP",
-          key: "domain"
+          title: this.$t("Operator"),
+          key: "operator",
+          width: 120
         },
         {
-          title: "端口",
-          key: "port"
-        },
-        {
-          title: "类型",
-          key: "type"
-        },
-        {
-          title: "是否启用",
-          key: "enable"
-        },
-        {
-          title: "操作人",
-          key: "operator"
-        },
-        {
-          title: "最后操作时间",
-          key: "update_time"
+          title: this.$t("LastOperationTime"),
+          key: "update_time",
+          minWidth: 160,
+          render: (h, params) => {
+            return h("span", parseTime(params.row.last_heart_time));
+          }
         }
       ],
       data: [],
@@ -94,42 +194,63 @@ export default {
       LineType: [],
       LineTypeId: 0,
       orderby: "",
+      ip: "",
       selectedItems: []
     };
   },
   created() {
-    this.HandleGetData(this.offset, this.limit);
-    this.HandleGetLineType();
+    this.HandleGetData({ offset: this.offset, limit: this.limit });
+    // this.HandleGetLineType();
   },
   methods: {
-    async HandleGetData(offset, limit, order, LineTypeId) {
+    HandleSearch(v) {
+      this.ip = v;
+      this.HandleGetData({
+        offset: 0,
+        limit: this.limit,
+        ip: this.ip,
+        orderby: this.orderby,
+        type: this.type,
+        linetypeid: this.lineTypeId
+      });
+    },
+    HandleChangePage(page) {
+      this.HandleGetData({
+        offset: page * this.limit - this.limit,
+        limit: page * this.limit,
+        orderby: this.orderby,
+        type: this.type,
+        linetypeid: this.lineTypeId
+      });
+    },
+    async HandleGetData({ offset, limit, order, linetypeid, ip }) {
+      this.loading = true;
       try {
-        let resp = await getFtpServer(offset, limit, order, LineTypeId);
+        linetypeid = linetypeid === 0 ? "" : linetypeid;
+        let resp = await getFtpServer({ offset, limit, order, linetypeid, ip });
         this.data = resp.data.data.data;
+        this.pageinfo = resp.data.data.pageino;
       } catch (error) {
-        console.log(error);
+        this.$Message.error(
+          this.$t("Get") + "FTP" + this.$t("Server") + this.$t("Failed")
+        );
+      } finally {
+        this.loading = false;
       }
     },
     async HandleGetLineType() {
       try {
         let resp = await getLineType();
-        this.LineType = resp.data;
+        this.LineType = resp.data.data;
         this.LineType.unshift({
           id: 0,
-          name: "所有类型"
+          name: this.$t("All") + this.$t("Type")
         });
       } catch (error) {
-        console.log(error);
+        this.$Message.error(
+          this.$t("Get") + this.$t("Line") + this.$t("Type") + this.$t("Failed")
+        );
       }
-    },
-    async ChangeLineType(id) {
-      this.LineTypeId = id;
-      this.HandleGetData(
-        this.offset,
-        this.limit,
-        this.orderby,
-        this.LineTypeId
-      );
     },
     ChangeSelection(item) {
       this.selectedItems = item;
@@ -141,7 +262,7 @@ export default {
           query: this.selectedItems
         });
       } else {
-        this.$Message.info("请选择一项");
+        this.$Message.info(this.$t("PleaseSelectOneItem"));
       }
     }
   }

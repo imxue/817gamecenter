@@ -4,71 +4,133 @@
       ref="form"
       :model="form"
       :rules="rule"
-      :label-width="200"
+      :label-width="220"
       label-colon
       label-position="right"
     >
       <Row :gutter="16">
         <Col span="12">
-          <FormItem label="Tracker类型" prop="type">
+          <FormItem :label="this.$t('Tracker') + this.$t('Type')" prop="type">
             <Select v-model="form.type" disabled>
-              <Option :value="1">主Bt</Option>
-              <Option :value="0">Bt</Option>
+              <Option :value="0">{{ this.$t("BTServer") }}</Option>
+              <Option :value="1">{{ this.$t("BTClient") }}</Option>
             </Select>
           </FormItem>
-          <FormItem label="线路类型" prop="line_type_id">
-            <Select v-model="form.line_type_id" disabled>
+          <FormItem
+            :label="this.$t('Line') + this.$t('Type')"
+            prop="line_type_id"
+          >
+            <!-- <Select v-model="form.line_type" disabled>
               <Option
                 v-for="item in LineType"
                 :value="item.id"
                 :key="item.id"
                 >{{ item.name }}</Option
               >
-            </Select>
+            </Select> -->
+            <Input v-model="form.line_type" type="text" disabled> </Input>
           </FormItem>
           <FormItem label="IP" prop="ip">
             <Input v-model="form.ip" type="text" disabled> </Input>
           </FormItem>
-          <FormItem label="外网域名/IP" prop="domain">
+          <FormItem
+            :label="this.$t('ExtranetDom') + '/' + this.$t('IP')"
+            prop="domain"
+          >
             <Input v-model="form.domain" type="text" disabled> </Input>
           </FormItem>
-          <FormItem label="是否启用" prop="enable">
+          <FormItem :label="this.$t('Available')" prop="enable">
             <Select v-model="form.enable" disabled>
-              <Option :value="1">启用</Option>
-              <Option :value="0">禁用</Option>
+              <Option :value="1">{{ this.$t("Enable") }}</Option>
+              <Option :value="0">{{ this.$t("Disabled") }}</Option>
             </Select>
           </FormItem>
-          <FormItem label="机器信息" prop="machine_info">
+          <FormItem
+            :label="this.$t('Machine') + this.$t('Message')"
+            prop="machine_info"
+          >
             <Input v-model="form.machine_info" type="textarea" disabled>
             </Input>
           </FormItem>
         </Col>
         <Col span="12">
-          <FormItem label="是否允许匿名登录" prop="allow_anoymous_login">
-            <Select v-model="form.allow_anoymous_login">
-              <Option :value= 1 >允许</Option>
-              <Option :value= 0 >禁用</Option>
+          <FormItem
+            :label="this.$t('Allow') + this.$t('Anonymous') + this.$t('Login')"
+            prop="allow_anoymous_login"
+          >
+            <Select
+              v-model.number="form.allow_anoymous_login"
+              :disabled="disabled"
+            >
+              <Option :value="1">{{ $t("Allow") }}</Option>
+              <Option :value="0">{{ $t("Disabled") }}</Option>
             </Select>
           </FormItem>
-          <FormItem label="全局最大连接数" prop="global_max_peer">
-            <Input v-model="form.global_max_peer" type="number"> </Input>
-          </FormItem>
-          <FormItem label="单个任务最大连接数" prop="per_mission_max_peer">
-            <Input v-model="form.per_mission_max_peer" type="number"> </Input>
+          <FormItem
+            :label="this.$t('Global') + this.$t('Max') + this.$t('Connections')"
+            prop="global_max_peer"
+          >
+            <Input
+              v-model.number="form.global_max_peer"
+              type="text"
+              :disabled="disabled"
+            >
+            </Input>
           </FormItem>
           <FormItem
-            label="同步允许配置时间间隔"
+            :label="this.$t('Per') + this.$t('Task') + this.$t('Connections')"
+            prop="per_mission_max_peer"
+          >
+            <Input
+              v-model.number="form.per_mission_max_peer"
+              type="text"
+              :disabled="disabled"
+            >
+            </Input>
+          </FormItem>
+          <FormItem
+            :label="
+              this.$t('Per') +
+                this.$t('Request') +
+                this.$t('Max') +
+                this.$t('Connections')
+            "
+            prop="per_req_return_peer"
+          >
+            <Input
+              v-model.number="form.per_req_return_peer"
+              type="text"
+              :disabled="disabled"
+            />
+          </FormItem>
+          <FormItem
+            :label="
+              this.$t('Sync') +
+                this.$t('Allow') +
+                this.$t('Config') +
+                this.$t('interval')
+            "
             prop="sync_config_time_interval"
           >
-            <Input v-model="form.sync_config_time_interval" type="number">
+            <Input
+              v-model.number="form.sync_config_time_interval"
+              type="text"
+              :disabled="disabled"
+            >
+              <span slot="append">{{ $t("Sec") }}</span>
             </Input>
           </FormItem>
-          <FormItem label="上次状态时间间隔" prop="upload_state_time_interval">
-            <Input v-model="form.upload_state_time_interval" type="number">
+          <FormItem
+            :label="this.$t('Last') + this.$t('Status') + this.$t('interval')"
+            prop="upload_state_time_interval"
+          >
+            <Input
+              v-model.number="form.upload_state_time_interval"
+              type="text"
+              :disabled="disabled"
+            >
+              <span slot="append">{{ $t("Sec") }}</span>
             </Input>
-          </FormItem>
-          <FormItem label="单次请求返回的最大Peer数目" prop="enable">
-            <Input v-model="form.ip" type="number"> </Input>
           </FormItem>
         </Col>
       </Row>
@@ -79,11 +141,14 @@
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ $t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
-            <Button type="primary" :disabled="loading" @click="handleRetrun()"
-              >返回</Button
+            <Button
+              type="primary"
+              :disabled="loading"
+              @click="handleRetrun()"
+              >{{ $t("Back") }}</Button
             >
           </div>
         </div>
@@ -93,35 +158,74 @@
 </template>
 
 <script>
-import {
-  getLineType,
-  getBTServerGroup,
-  getarea,
-  setRunConfig
-} from "@/api/server";
+import { setBtTrickRunConfig, getBtTrackerRunConfig } from "@/api/server";
 export default {
   name: "setRunConfig",
   data() {
     return {
       loading: false,
+      disabled: false,
       form: {
         server_id: "",
+        line_type: "",
         ip: "",
         type: "",
         domain: "",
         enable: "",
-        allow_anoymous_login: 1,
-        global_max_peer: 0,
-        per_mission_max_peer: 0,
-        sync_config_time_interval: 0,
-        upload_state_time_interval: 0,
+        allow_anoymous_login: "",
+        global_max_peer: "",
+        per_mission_max_peer: "",
+        per_req_return_peer: "",
+        sync_config_time_interval: "",
+        upload_state_time_interval: "",
         machine_info: ""
       },
       rule: {
-        name: [
+        allow_anoymous_login: [
           {
             required: true,
-            message: "The name cannot be empty",
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        global_max_peer: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        per_mission_max_peer: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        per_req_return_peer: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        sync_config_time_interval: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        upload_state_time_interval: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
             trigger: "blur"
           }
         ]
@@ -133,17 +237,10 @@ export default {
   },
   created() {
     for (let item in this.form) {
-      this.form[item] = this.$route.query[0][item] || 1;
+      this.form[item] = this.$route.query[0][item];
     }
-    this.form.server_id = this.$route.query[0].id
-    Promise.all([getLineType(), getBTServerGroup(), getarea()]).then(resp => {
-      this.LineType = resp[0].data;
-      this.form.line_type_id = this.LineType[0] && this.LineType[0].id;
-      this.ServerGroup = resp[1].data;
-      this.form.bt_server_group_id =
-        this.ServerGroup[0] && this.ServerGroup[1].id;
-      this.Area = resp[2].data;
-    });
+    this.handleGetData(this.$route.query[0].id);
+    this.form.server_id = this.$route.query[0].id;
   },
   methods: {
     handleSubmit(name) {
@@ -151,16 +248,46 @@ export default {
         if (valid) {
           try {
             this.loading = true;
-            await setRunConfig(this.form);
-            this.$Message.success('设置成功');
+            await setBtTrickRunConfig(this.form);
+            this.$Message.success(this.$t("Set") + this.$t("Success"));
             this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.success(this.$t("Set") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }
         }
       });
+    },
+    async handleGetData(id) {
+      let idx = id;
+      this.disabled = true;
+      try {
+        let resp = await getBtTrackerRunConfig(id);
+        this.form.global_max_peer = resp.data.data.global_max_peer;
+        this.form.per_mission_max_peer = resp.data.data.per_mission_max_peer;
+        this.form.per_req_return_peer = resp.data.data.per_req_return_peer;
+        this.form.allow_anoymous_login = resp.data.data.allow_anoymous_login;
+        this.form.sync_config_time_interval =
+          resp.data.data.sync_config_time_interval;
+        this.form.upload_state_time_interval =
+          resp.data.data.upload_state_time_interval;
+      } catch (error) {
+        this.$Modal.confirm({
+          title: this.$t("Message"),
+          content: `${this.$t("Initialization")} ID:${idx} ${this.$t(
+            "Server"
+          )} ${this.$t("RunConfig")}`,
+          onOk: () => {
+            this.disabled = false;
+          },
+          onCancel: () => {
+            this.$router.go(-1);
+          }
+        });
+      } finally {
+        this.disabled = false;
+      }
     },
     handleRetrun() {
       this.$router.go(-1);
@@ -171,7 +298,6 @@ export default {
 
 <style lang="scss" scoped>
 .RunContainer {
-  max-width: 1000px;
-  margin: 0 auto;
+  margin-left: 20px;
 }
 </style>

@@ -1,45 +1,66 @@
 <template>
   <div>
-    <Row :gutter="16">
-      <Col span="5">
-        <Select v-model="model1">
-          <Option
-            v-for="item in cityList"
-            :value="item.value"
-            :key="item.value"
-            >{{ item.label }}</Option
-          >
-        </Select>
-      </Col>
-      <Col span="6">
-        <Input search enter-button="Search" placeholder="Enter something..." />
-      </Col>
-    </Row>
-    <Row style="margin:10px 0;">
-      <Col span="2">
-        <router-link to="/ServerManagement/ClusterLoginServer/add">
-          <Button type="info">添加</Button>
-        </router-link>
-      </Col>
-      <Col span="2">
-        <Button type="info" @click="HandleEdit">编辑</Button>
-      </Col>
-    </Row>
+    <div style="display:flex;">
+      <Select
+        v-model="LineTypeId"
+        @on-change="ChangeLineType"
+        style="width:220px;marginRight:10px"
+      >
+        <Option v-for="item in LineType" :value="item.id" :key="item.id">{{
+          item.name
+        }}</Option>
+      </Select>
+      <Input
+        search
+        style="width:300px;"
+        :enter-button="this.$t('Search')"
+        :placeholder="this.$t('Input') + this.$t('IP') + this.$t('Search')"
+        @on-search="HandleSearch"
+      />
+    </div>
+    <div style="margin:10px 0;">
+      <router-link
+        to="/ServerManagement/ClusterLoginServer/add"
+        style="marginRight:10px;"
+      >
+        <Button type="info">{{ $t("Add") }}</Button>
+      </router-link>
+      <Button type="info" @click="HandleEdit" :disabled="loading">{{
+        $t("Edit")
+      }}</Button>
+    </div>
 
     <Table
+      size="small"
       :columns="columns"
       :data="data"
       border
+      :loading="loading"
       @on-selection-change="ChangeSelection"
     ></Table>
+    <Page
+      show-total
+      :total="pageinfo.count"
+      :page-size="limit"
+      style="margin-top:10px;float:right;"
+      @on-change="HandleChangePage"
+    />
   </div>
 </template>
 <script>
-import { getClusterLginServer } from "@/api/server";
+import { getClusterLginServer, getAllenabled } from "@/api/server";
+import { parseTime } from "@/utils";
 export default {
   name: "TrackerIndex",
   data() {
     return {
+      loading: true,
+      LineType: [],
+      pageinfo: {
+        page_index: 0,
+        page_size: 1,
+        count: 2
+      },
       columns: [
         {
           type: "selection",
@@ -47,67 +68,188 @@ export default {
           align: "center"
         },
         {
-          title: "在线状态",
-          key: "is_online"
+          title: this.$t("Online") + this.$t("Status"),
+          key: "is_online",
+          minWidth: 90,
+          render: (h, params) => {
+            let isOnline = {
+              1: {
+                title: this.$t("Online"),
+                color: "#52c41a"
+              },
+              0: {
+                title: this.$t("Offline"),
+                color: "#ffa39e"
+              }
+            };
+            return h(
+              "span",
+              {
+                style: {
+                  color: isOnline[params.row.is_online].color || "-"
+                }
+              },
+              isOnline[params.row.is_online].title || "-"
+            );
+          }
         },
         {
-          title: "服务器类型 ",
-          key: "type"
+          title: this.$t("Server") + this.$t("Type"),
+          key: "type",
+          minWidth: 130,
+          render: (h, params) => {
+            let obj = {
+              0: this.$t("Cluster") + this.$t("Login") + this.$t("Server"),
+              1: this.$t("Cluster") + this.$t("Comm") + this.$t("Server"),
+              3: this.$t("Pierced") + this.$t("Comm"),
+              4: this.$t("Pierced") + this.$t("Login"),
+              5: this.$t("Upload") + this.$t("Dispatch"),
+              6: this.$t("Efficiency") + this.$t("Statistics"),
+              7: this.$t("Port") + this.$t("Detection")
+            };
+
+            return h("span", obj[params.row.type]);
+          }
         },
         {
           title: "IP",
-          key: "server_ip"
+          key: "server_ip",
+          width: 140
         },
         {
-          title: "端口",
-          key: "port"
+          title: this.$t("Port"),
+          key: "port",
+          width: 90
         },
         {
-          title: "线路类型",
-          key: "line_type"
+          title: this.$t("Line") + this.$t("Type"),
+          key: "line_type",
+          width: 100
         },
         {
-          title: "程序版本",
-          key: "version"
+          title: this.$t("Program") + this.$t("Version"),
+          key: "version",
+          minWidth: 100
         },
         {
-          title: "是否启用",
-          key: "status"
+          title: this.$t("Available"),
+          key: "status",
+          minWidth: 100,
+          render: (h, params) => {
+            let isOnline = {
+              1: {
+                title: this.$t("Enable"),
+                color: "#52c41a"
+              },
+              0: {
+                title: this.$t("Disabled"),
+                color: "#ffa39e"
+              }
+            };
+            return h(
+              "span",
+              {
+                style: {
+                  color: isOnline[params.row.status].color || "-"
+                }
+              },
+              isOnline[params.row.status].title || "-"
+            );
+          }
         },
         {
-          title: "最后心跳时间",
-          key: "last_heart_time"
+          title: this.$t("Last") + this.$t("Heartbeat") + this.$t("Time"),
+          key: "last_heart_time",
+          width: 185,
+          render: (h, params) => {
+            return h("span", parseTime(params.row.last_heart_time));
+          }
         },
         {
-          title: "操作人",
-          key: "name"
+          title: this.$t("Operator"),
+          key: "operator",
+          minWidth: 100
         },
         {
-          title: "操作人",
-          key: "operator"
-        },
-        {
-          title: "最后操作时间",
-          key: "update_time"
+          title: this.$t("LastOperationTime"),
+          key: "update_time",
+          minWidth: 170,
+          render: (h, params) => {
+            return h("span", parseTime(params.row.update_time));
+          }
         }
       ],
       data: [],
       offset: 0,
       limit: 10,
+      LineTypeId: 0,
+      orderby: "",
       selectedItems: []
     };
   },
   created() {
-    this.HandleGetData(this.offset, this.limit);
+    this.HandleGetData({ offset: this.offset, limit: this.limit });
+    this.HandleGetLineType();
   },
   methods: {
-    async HandleGetData(offset, limit, order, id, ip) {
+    HandleChangePage(page) {
+      this.HandleGetData({
+        offset: page * this.limit - this.limit,
+        limit: page * this.limit,
+        order: this.orderby,
+        type: this.type,
+        linetypeid: this.lineTypeId
+      });
+    },
+    HandleSearch(v) {
+      this.ip = v + "";
+      this.HandleGetData({
+        offset: this.offset,
+        limit: this.limit,
+        ip: this.ip,
+        order: this.orderby,
+        linetypeid: this.lineTypeId
+      });
+    },
+    async ChangeLineType(id) {
+      this.LineTypeId = id;
+      this.HandleGetData({
+        offset: this.offset,
+        limit: this.limit,
+        order: this.orderby,
+        linetypeid: this.LineTypeId,
+        ip: this.ip
+      });
+    },
+    async HandleGetData({ offset, limit, order, linetypeid, ip }) {
+      this.loading = true;
       try {
-        let resp = await getClusterLginServer(offset, limit, order, id, ip);
+        linetypeid = linetypeid === 0 ? "" : linetypeid;
+        let resp = await getClusterLginServer({
+          offset,
+          limit,
+          order,
+          linetypeid,
+          ip
+        });
         this.data = resp.data.data.data;
-        console.log(this.data);
+        this.pageinfo = resp.data.data.pageino;
       } catch (error) {
-        console.log(error);
+        this.$Message.error(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async HandleGetLineType() {
+      try {
+        let resp = await getAllenabled();
+        this.LineType = resp.data.data;
+        this.LineType.unshift({
+          id: 0,
+          name: this.$t("All") + this.$t("Type")
+        });
+      } catch (error) {
+        this.$Message.error(error);
       }
     },
     ChangeSelection(item) {
@@ -120,7 +262,7 @@ export default {
           query: this.selectedItems
         });
       } else {
-        this.$Message.info("请选择一项");
+        this.$Message.info(this.$t("PleaseSelectOneItem"));
       }
     }
   }

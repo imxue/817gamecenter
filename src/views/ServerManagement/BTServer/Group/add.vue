@@ -1,13 +1,13 @@
 <template>
-  <div style="width:440px">
-    <Form ref="form" :model="form" :rules="rule" :label-width="80">
-      <FormItem label="分组名称" prop="name">
-        <Input type="text" v-model="form.name" > </Input>
+  <div style="width:450px">
+    <Form ref="form" :model="form" :rules="rule" :label-width="160">
+      <FormItem :label="this.$t('Group') + this.$t('Name')" prop="name">
+        <Input type="text" v-model.trim="form.name"> </Input>
       </FormItem>
-      <FormItem label="状态" prop="enable">
+      <FormItem :label="this.$t('Available')" prop="enable">
         <Select v-model="form.enable">
-          <Option :value="1">启用</Option>
-          <Option :value="0">禁用</Option>
+          <Option :value="1">{{ $t("Enable") }}</Option>
+          <Option :value="0">{{ $t("Disabled") }}</Option>
         </Select>
       </FormItem>
       <FormItem>
@@ -16,14 +16,14 @@
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ $t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
             <Button
               type="primary"
               :disabled="loading"
               @click="handleRetrun()"
-              >返回</Button
+              >{{ $t("Back") }}</Button
             >
           </div>
         </div>
@@ -33,10 +33,23 @@
 </template>
 
 <script>
-import { addBTServerGroup } from "@/api/server";
+import { addBTServerGroup, verifyBtServerNameUnique } from "@/api/server";
+import { mapState } from "vuex";
 export default {
   name: "Groupadd",
   data() {
+    const validateGameName = async (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error(this.$t("fne")));
+      } else {
+        try {
+          await verifyBtServerNameUnique(value);
+          callback();
+        } catch (error) {
+          callback(new Error(this.$t("该分组已经存在")));
+        }
+      }
+    };
     return {
       loading: false,
       form: {
@@ -47,12 +60,17 @@ export default {
         name: [
           {
             required: true,
-            message: "The name cannot be empty",
+            validator: validateGameName,
             trigger: "blur"
           }
         ]
       }
     };
+  },
+  computed: {
+    ...mapState({
+      GameGroupName: state => state.GameGroupName
+    })
   },
   methods: {
     handleSubmit(name) {
@@ -61,8 +79,11 @@ export default {
           try {
             this.loading = true;
             await addBTServerGroup(this.form);
+            this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.error(
+              this.$t("Add") + this.$t("ServerGroup") + this.$t("Failed")
+            );
           } finally {
             this.loading = false;
           }
@@ -70,7 +91,7 @@ export default {
       });
     },
     handleRetrun() {
-        this.$router.go(-1)
+      this.$router.go(-1);
     }
   }
 };

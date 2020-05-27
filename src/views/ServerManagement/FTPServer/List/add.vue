@@ -1,5 +1,5 @@
 <template>
-  <div class="RunContainer">
+  <div>
     <Form
       ref="form"
       :model="form"
@@ -8,64 +8,100 @@
       label-colon
       label-position="right"
     >
-      <Row :gutter="16">
-        <Col span="12">
+      <div class="flex">
+        <div>
           <FormItem label="类型" prop="type">
-            <Select v-model="form.type">
-              <Option :value="1">主Bt</Option>
-              <Option :value="0">Bt</Option>
+            <Select v-model="form.type" class="w200">
+              <Option :value="1"
+                >{{ this.$t("Sync") }}{{ this.$t("Source")
+                }}{{ this.$t("Server") }}</Option
+              >
+              <Option :value="0"
+                >{{ this.$t("Passive") }}{{ this.$t("Source")
+                }}{{ this.$t("Server") }}</Option
+              >
             </Select>
           </FormItem>
-              <FormItem label="线路类型" prop="type">
-            <Select v-model="form.line_type_id">
-              <Option v-for="item in LineType" :value="item.id" :key="item.id">{{item.name}}</Option>
-            </Select>
-          </FormItem>
-          <FormItem label="外网域名/ip" prop="domain">
+          <FormItem
+            :label="this.$t('ExtranetDom') + '/' + this.$t('IP')"
+            prop="domain"
+          >
             <Input v-model="form.domain" type="text"> </Input>
           </FormItem>
-          <FormItem label="端口" prop="port">
-            <Input v-model.number="form.port" type="number"> </Input>
+          <FormItem :label="this.$t('Port')" prop="port">
+            <Input v-model.number="form.port" type="text"> </Input>
           </FormItem>
-          <FormItem label="上传账号" prop="upload_account">
+          <FormItem
+            :label="this.$t('Upload') + this.$t('Account')"
+            prop="upload_account"
+          >
             <Input v-model="form.upload_account" type="text"> </Input>
           </FormItem>
-          <FormItem label="上传密码" prop="upload_password">
+          <FormItem
+            :label="this.$t('Upload') + this.$t('Password')"
+            prop="upload_password"
+          >
             <Input v-model="form.upload_password" type="password"> </Input>
           </FormItem>
-        </Col>
-        <Col span="12">
-          <FormItem label="下载账号" prop="download_account">
+        </div>
+        <div>
+          <FormItem
+            :label="this.$t('Download') + this.$t('Account')"
+            prop="download_account"
+          >
             <Input v-model="form.download_account" type="text"> </Input>
           </FormItem>
-          <FormItem label="下载密码" prop="download_password">
+          <FormItem
+            :label="this.$t('Download') + this.$t('Password')"
+            prop="download_password"
+          >
             <Input v-model="form.download_password" type="password"> </Input>
           </FormItem>
-          <FormItem label="种子文件存放路径" prop="seed_path">
+          <FormItem
+            :label="
+              this.$t('Seed') +
+                this.$t('File') +
+                this.$t('Save') +
+                this.$t('Path')
+            "
+            prop="seed_path"
+          >
             <Input v-model="form.seed_path" type="text"> </Input>
           </FormItem>
-          <FormItem label="游戏配置文件存放路径" prop="game_path">
+          <FormItem
+            :label="
+              this.$t('Game') +
+                this.$t('Config') +
+                this.$t('File') +
+                this.$t('Save') +
+                this.$t('Path')
+            "
+            prop="game_path"
+          >
             <Input v-model="form.game_path" type="text"> </Input>
           </FormItem>
-          <FormItem label="是否启用" prop="enable">
+          <FormItem :label="this.$t('Available')" prop="enable">
             <Select v-model="form.enable">
-              <Option :value= 1>启用</Option>
-              <Option :value= 0>禁用</Option>
+              <Option :value="1">{{ $t("Enable") }}</Option>
+              <Option :value="0">{{ $t("Disabled") }}</Option>
             </Select>
           </FormItem>
-        </Col>
-      </Row>
+        </div>
+      </div>
       <FormItem>
         <div style="display:flex;">
           <Button
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
+            >{{ $t("Save") }}</Button
           >
           <div style="marginLeft:40px;">
-            <Button type="primary" :disabled="loading" @click="handleRetrun()"
-              >返回</Button
+            <Button
+              type="primary"
+              :disabled="loading"
+              @click="handleRetrun()"
+              >{{ $t("Back") }}</Button
             >
           </div>
         </div>
@@ -75,17 +111,17 @@
 </template>
 
 <script>
-import { addFtpServer,getLineType } from "@/api/server";
+import { addFtpServer } from "@/api/server";
 export default {
   name: "setRunConfig",
   data() {
     return {
       loading: false,
       form: {
-        type: "",
-        line_type_id: 0,
+        type: 0,
+        // line_type_id: null,
         domain: "",
-        port: '',
+        port: 21,
         enable: 1,
         upload_account: "",
         upload_password: "",
@@ -95,20 +131,68 @@ export default {
         game_path: ""
       },
       rule: {
-        name: [
+        domain: [
           {
             required: true,
-            message: "The name cannot be empty",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        port: [
+          {
+            required: true,
+            type: "number",
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        upload_account: [
+          {
+            required: true,
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        upload_password: [
+          {
+            required: true,
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        download_account: [
+          {
+            required: true,
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        download_password: [
+          {
+            required: true,
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        seed_path: [
+          {
+            required: true,
+            message: this.$t("fne"),
+            trigger: "blur"
+          }
+        ],
+        game_path: [
+          {
+            required: true,
+            message: this.$t("fne"),
             trigger: "blur"
           }
         ]
       },
-      LineType:[]
+      LineType: []
     };
   },
-  created() {
-    this.HandleGetLineType()
-  },
+  created() {},
   methods: {
     handleSubmit(name) {
       this.$refs[name].validate(async valid => {
@@ -116,10 +200,10 @@ export default {
           try {
             this.loading = true;
             await addFtpServer(this.form);
-            this.$Message.success("设置成功");
+            this.$Message.success(this.$t("Set") + this.$t("Success"));
             this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.error(this.$t("Set") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }
@@ -128,23 +212,17 @@ export default {
     },
     handleRetrun() {
       this.$router.go(-1);
-    },
-    async HandleGetLineType() {
-      try {
-      let resp = await getLineType()
-      this.LineType = resp.data
-      this.form.line_type_id = this.LineType[0].id
-      } catch (error) {
-        console.log(error)
-      }
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.RunContainer {
-  max-width: 1000px;
-  margin: 0 auto;
+// .w200 {
+//   width: 200px;
+// }
+.flex {
+  display: flex;
+  width: 800px;
 }
 </style>

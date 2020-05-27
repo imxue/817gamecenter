@@ -4,56 +4,61 @@
       <FormItem label="ID" prop="id">
         <Input v-model="form.id" type="text" disabled></Input>
       </FormItem>
-      <FormItem label="BtServer类型" prop="type">
+      <FormItem
+        :label="this.$t('BT') + this.$t('Server') + this.$t('Type')"
+        prop="type"
+      >
         <Select v-model="form.type">
-          <Option :value="1">非做种服务器</Option>
-          <Option :value="0">做种服务器</Option>
+          <Option :value="1"
+            >{{ $t("Not") }}{{ $t("Seeding") }}{{ $t("Server") }}</Option
+          >
+          <Option :value="0">{{ $t("Seeding") }}{{ $t("Server") }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="服务器分组" prop="bt_server_group_id">
+      <FormItem :label="this.$t('Group')" prop="bt_server_group_id">
         <Select v-model="form.bt_server_group_id">
           <Option v-for="item in ServerGroup" :value="item.id" :key="item.id">{{
             item.name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="地区" prop="area_code">
+      <FormItem :label="this.$t('Region')" prop="area_code">
         <Select v-model="form.area_code">
           <Option v-for="item in Area" :value="item.Id" :key="item.Id">{{
             item.Name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="线路类型" prop="line_type_id">
+      <FormItem :label="this.$t('Line') + this.$t('Type')" prop="line_type_id">
         <Select v-model="form.line_type_id">
           <Option v-for="item in LineType" :value="item.id" :key="item.id">{{
             item.name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="ip" prop="ip">
+      <FormItem :label="this.$t('IP')" prop="ip">
         <Row>
           <Col span="17">
             <Input v-model="form.ip" type="text"> </Input>
           </Col>
           <Col span="7">
-            <Input v-model="form.port" type="text"> </Input>
+            <Input v-model.number="form.port" type="text"> </Input>
           </Col>
         </Row>
       </FormItem>
-      <FormItem label="是否启用" prop="enable">
+      <FormItem :label="this.$t('Available')" prop="enable">
         <Select v-model="form.enable">
           <Option v-for="item in enableArray" :value="item.id" :key="item.id">{{
             item.name
           }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="备注" prop="comments">
+      <FormItem :label="this.$t('Remarks')" prop="comments">
         <Input
           v-model="form.comments"
           type="textarea"
           :rows="4"
-          placeholder="Enter something..."
+          placeholder="添加备注"
         />
       </FormItem>
       <FormItem>
@@ -62,11 +67,14 @@
             :loading="loading"
             type="primary"
             @click="handleSubmit('form')"
-            >保存</Button
-          >
+            >{{ this.$t("Save") }}
+          </Button>
           <div style="marginLeft:40px;">
-            <Button type="primary" :disabled="loading" @click="handleRetrun()"
-              >返回</Button
+            <Button
+              type="primary"
+              :disabled="loading"
+              @click="handleRetrun()"
+              >{{ this.$t("Back") }}</Button
             >
           </div>
         </div>
@@ -77,8 +85,8 @@
 
 <script>
 import {
-  getLineType,
-  getBTServerGroup,
+  getAllenabled,
+  getAllBtServerGroupenabled,
   editBTServer,
   getarea
 } from "@/api/server";
@@ -101,11 +109,11 @@ export default {
       enableArray: [
         {
           id: 1,
-          name: "启用"
+          name: this.$t("Enable")
         },
         {
           id: 0,
-          name: "禁用"
+          name: this.$t("Disabled")
         }
       ],
       rule: {
@@ -123,9 +131,6 @@ export default {
             message: "The type cannot be empty",
             trigger: "blur"
           }
-          //   { type: 'number', message: 'Incorrect number format', trigger: 'blur',transform(value) {
-          //       return Number(value)
-          //   } }
         ],
         line_type_id: [
           {
@@ -183,11 +188,14 @@ export default {
       this.form[item] = this.$route.query[0][item];
     }
     this.form.enable = Number(this.form.enable);
-    console.log(this.form);
-    Promise.all([getLineType(), getBTServerGroup(), getarea()]).then(resp => {
-      this.LineType = resp[0].data;
-      this.ServerGroup = resp[1].data;
-      this.Area = resp[2].data;
+    Promise.all([
+      getAllenabled(),
+      getAllBtServerGroupenabled(),
+      getarea()
+    ]).then(resp => {
+      this.LineType = resp[0].data.data;
+      this.ServerGroup = resp[1].data.data;
+      this.Area = resp[2].data.data;
     });
   },
   methods: {
@@ -199,7 +207,7 @@ export default {
             await editBTServer(this.form);
             this.$router.go(-1);
           } catch (error) {
-            console.log(error);
+            this.$Message.success(this.$t("Edit") + this.$t("Success"));
           } finally {
             this.loading = false;
           }
