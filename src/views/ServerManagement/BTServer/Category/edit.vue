@@ -58,7 +58,7 @@
           v-model="form.comments"
           type="textarea"
           :rows="4"
-          placeholder="添加备注"
+          :placeholder="this.$t('addComment')"
         />
       </FormItem>
       <FormItem>

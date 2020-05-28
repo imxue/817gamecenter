@@ -55,12 +55,12 @@ export default {
         {
           title: this.$t("Game") + this.$t("Category"),
           key: "game_type_name",
-          minWidth: 150
+          minWidth: 100
         },
         {
           title: this.$t("Normal") + this.$t("Game") + this.$t("Version"),
           key: "official_version",
-          minWidth: 190
+          minWidth: 120
         },
         {
           title: this.$t("Latest") + this.$t("Doseed") + this.$t("Version"),
@@ -143,44 +143,6 @@ export default {
       }
     ];
   },
-  methods: {
-    //       async HandelsysncStat(name) {
-    //   this.state = name;
-    //   this.HandleGetData({
-    //     offset: this.offset,
-    //     limit: this.limit,
-    //     orderby: this.orderby,
-    //     state: this.state,
-    //     typeid: this.typeid,
-    //     firstletter: this.firstletter
-    //   });
-    // },
-    //     async HandleGetData({
-    //   offset,
-    //   limit,
-    //   orderby,
-    //   state,
-    //   typeid,
-    //   firstletter
-    // }) {
-    //   try {
-    //     this.loading = true;
-    //     let resp = await getGameStatus({
-    //       offset,
-    //       limit,
-    //       orderby,
-    //       state,
-    //       typeid,
-    //       firstletter
-    //     });
-    //     this.data = resp.data.data.data;
-    //     this.pageinfo = resp.data.data.pageino;
-    //   } catch (error) {
-    //     this.$Message.error("获取游戏状态失败");
-    //   } finally {
-    //     this.loading = false;
-    //   }
-    // },
-  }
+  methods: {}
 };
 </script>

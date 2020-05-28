@@ -211,5 +211,24 @@ export default {
   addTracker: "添加Tracker",
   editTracker: "编辑Tracker",
   setRunConfig: "设置运行配置",
-  displayNameE: "该显示分类显示名称已存在"
+  displayNameE: "该显示分类显示名称已存在",
+  defaultGroup: "默认分组",
+  agm: "添加游戏公司",
+  serverGroup: "服务器分组",
+  sgf: "输入需要搜索的游戏搜索名称",
+  customize: "自定义",
+  tip:
+    "已存在默认线路，默认线路为唯一。<br/> 如果您知晓您的操作<br/>请手动取消当前默认线路",
+  opttip: "操作提示",
+  tip2:
+    "已存在默认线路<br/>需要手动取消当前默认线路<br/><br/><code>此操作存在风险，请谨慎操作！</code>",
+  closed: "关闭",
+  addComment: "添加备注",
+  igm: "输入游戏名称或游戏ID",
+  stopUpload: "停止上传",
+  deleteGame: "删除游戏",
+  Processing: "处理中",
+  Waitting: "等待中",
+  Delete: "删除",
+  ResourceStatus: "资源状态"
 };

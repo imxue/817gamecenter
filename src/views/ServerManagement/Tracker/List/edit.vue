@@ -41,7 +41,7 @@
         <Input
           v-model="form.machine_info"
           type="textarea"
-          :rows="4"
+          :rows="10"
           placeholder="请输入"
         />
       </FormItem>

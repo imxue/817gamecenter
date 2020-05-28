@@ -5,8 +5,8 @@ module.exports = {
     proxy: {
       "/*": {
         //   target: "https://hkauth.wujisafe.com:12345", // 域名
+        // target: "http://10.88.66.202:12830/", // 域名
         target: "http://10.88.66.202:12830/", // 域名
-        // target: "http://10.88.66.21:12830/", // 域名
         // target: "http://203.222.24.74:12830/", // 域名
         secure: false,
         ws: true, // 是否启用websockets

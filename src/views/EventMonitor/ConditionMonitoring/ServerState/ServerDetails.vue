@@ -26,11 +26,6 @@ export default {
           minWidth: 100
         },
         {
-          key: "state",
-          title: this.$t("Status"),
-          minWidth: 90
-        },
-        {
           key: "up",
           title:
             this.$t("Upstream") +
@@ -68,12 +63,12 @@ export default {
           key: "version",
           title: this.$t("Program") + this.$t("Version"),
           minWidth: 150
-        },
-        {
-          key: "type",
-          minWidth: 180,
-          title: this.$t("Last") + this.$t("Heartbeat") + this.$t("Time")
         }
+        // {
+        //   key: "type",
+        //   minWidth: 180,
+        //   title: this.$t("Last") + this.$t("Heartbeat") + this.$t("Time")
+        // }
       ],
       data: [],
       ServerType: {

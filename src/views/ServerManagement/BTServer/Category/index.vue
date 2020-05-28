@@ -74,9 +74,9 @@
        <template slot="contextMenu">
         <DropdownItem
           @click.native="handleContextMenuEdit"
-          >编辑</DropdownItem>
-        <DropdownItem style="color: #ed4014" @click.native="handleContextMenuResou">资源状态</DropdownItem>
-        <DropdownItem style="color: #ed4014" @click.native="handleContextMenuSetRun">设置运行配置</DropdownItem>
+          >{{$t('Edit')}}</DropdownItem>
+        <DropdownItem style="color: #ed4014" @click.native="handleContextMenuResou">{{$t('ResourceStatus')}}</DropdownItem>
+        <DropdownItem style="color: #ed4014" @click.native="handleContextMenuSetRun">{{ $t("Set") }}{{ $t("RunConfig") }}</DropdownItem>
       </template>
       </Table>
       <Page
@@ -186,7 +186,7 @@ export default {
           tooltip: true
         },
         {
-          title: this.$t("Available"),
+        title: this.$t("Available"),
           key: "enable",
           minWidth: 100,
           maxWidth: 100,
@@ -237,7 +237,7 @@ export default {
                 this.getGameIp(params.row.ip)
               }
              }
-            },"资源状态")
+            },this.$t('ResourceStatus'))
             return a
           }
         }

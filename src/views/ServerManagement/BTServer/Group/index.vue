@@ -62,7 +62,26 @@ export default {
           title: this.$t("Group") + this.$t("Name"),
           key: "name",
           minWidth: 90,
-          maxWidth: 120
+          maxWidth: 120,
+          render: (h, params) => {
+            let a;
+            let b;
+            if (params.row.is_default === 1) {
+              a = h(
+                "tag",
+                {
+                  props: {
+                    color: "success"
+                  }
+                },
+                this.$t("defaultGroup")
+              );
+              b = h("span", params.row.name);
+              return [a, b];
+            } else {
+              return h("span", params.row.name);
+            }
+          }
         },
         {
           title: this.$t("Available"),

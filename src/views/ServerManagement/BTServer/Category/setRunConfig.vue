@@ -394,10 +394,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.RunContainer {
-  // max-width: 1000px;
-  // margin: 0 auto;
-}
-</style>

@@ -661,7 +661,7 @@ const routes = [
                   "/EventMonitoring/ConditionMonitoring/ServerState/ServerDetails",
                 name: "Details",
                 meta: {
-                  title: "Details",
+                  title: "详情",
                   show: false
                 },
                 component: () =>

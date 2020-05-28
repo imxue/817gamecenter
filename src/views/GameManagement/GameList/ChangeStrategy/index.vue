@@ -13,9 +13,9 @@
       <Input
         search
         style="width:300px;"
-        enter-button="Search"
+        :enter-button="this.$t('Search')"
         @on-search="HandleSearch"
-        placeholder="输入需要搜索的游戏名称首字母"
+        :placeholder="this.$t('sgf')"
       />
     </div>
     <div style="marginBottom:10px;">

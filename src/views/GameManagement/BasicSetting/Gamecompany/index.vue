@@ -29,7 +29,7 @@
       style="float:right; margin-top:10px;"
       @on-change="HandleChangePage"
     />
-    <Modal footer-hide v-model="GameCompanyModel" title="添加游戏公司">
+    <Modal footer-hide v-model="GameCompanyModel" :title="this.$t('agm')">
       <component
         ref="GameCompanyModel"
         v-bind:is="currentTabComponent"

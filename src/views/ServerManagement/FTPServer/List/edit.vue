@@ -10,7 +10,7 @@
     >
       <Row :gutter="16">
         <Col span="12">
-          <FormItem label="类型" prop="type">
+          <FormItem :label="this.$t('Type')" prop="type">
             <Select v-model="form.type">
               <Option :value="1"
                 >{{ this.$t("Sync") }}{{ this.$t("Source")
@@ -228,6 +228,5 @@ export default {
 <style lang="scss" scoped>
 .RunContainer {
   max-width: 1000px;
-  margin: 0 auto;
 }
 </style>

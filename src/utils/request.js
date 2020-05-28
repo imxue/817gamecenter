@@ -44,6 +44,9 @@ service.interceptors.response.use(
     if (!response.data.ok) {
       return Promise.reject(response);
     } else {
+      if (response.data.token) {
+        localStorage.setItem("gamecenterToken", response.data.token);
+      }
       return response;
     }
   },

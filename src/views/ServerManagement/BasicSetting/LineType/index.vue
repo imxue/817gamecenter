@@ -45,63 +45,6 @@ export default {
       offset: 0,
       limit: 11,
       selectedItems: [], // 选择的项
-      // columns: [
-      //   {
-      //     type: "selection",
-      //     width: 60,
-      //     align: "center"
-      //   },
-      //   {
-      //     title: this.$t('ISP') + this.$t('Name'),
-      //     key: "name"
-      //   },
-      //   {
-      //     title: this.$t('Available'),
-      //     key: "enable",
-      //     render: (h, params) => {
-      //       let a = "";
-      //       switch (params.row.enable) {
-      //         case 1:
-      //           a = h(
-      //             "span",
-      //             {
-      //               style: {
-      //                 color: "#52c41a"
-      //               }
-      //             },
-      //             this.$t('Enable')
-      //           );
-      //           break;
-      //         case 0:
-      //           a = h(
-      //             "span",
-      //             {
-      //               style: {
-      //                 color: "#ffa39e"
-      //               }
-      //             },
-      //             this.$t('Disabled')
-      //           );
-      //           break;
-      //         default:
-      //           a = h("span", params.row.enable);
-      //           break;
-      //       }
-      //       return a;
-      //     }
-      //   },
-      //   {
-      //     title: this.$t('Operator'),
-      //     key: "operator"
-      //   },
-      //   {
-      //     title: this.$t('LastOperationTime'),
-      //     key: "update_time",
-      //     render: (h, params) => {
-      //       return h("span", parseTime(params.row.update_time));
-      //     }
-      //   }
-      // ],
       data: [],
       pageinfo: {
         count: 0
@@ -205,28 +148,6 @@ export default {
       offset: this.offset,
       limit: this.limit
     });
-
-    // try {
-    //   let resp = await getLineType();
-    //   this.data = resp.data.data.data;
-
-    //   this.pageinfo = resp.data.data.pageino;
-    //   let LineName = this.data.map(item => item.name);
-    //   this.$store.dispatch("Save_Line_name", LineName);
-    //   let t = this.data.filter(item => {
-    //     return item.is_default === 1;
-    //   });
-    //   this.$store.dispatch("IsDefaultLine", t.length === 1 ? t[0] : {});
-    // } catch (error) {
-    //   this.$Message.error(
-    //     this.$t("Get") +
-    //       this.$t("LineType") +
-    //       this.$t("Data") +
-    //       this.$t("Failed")
-    //   );
-    // } finally {
-    //   this.loading = false;
-    // }
   },
   methods: {
     async HandleChangePage(current) {

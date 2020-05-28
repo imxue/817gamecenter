@@ -61,38 +61,38 @@ export default {
         {
           key: "game_type_name",
           title: this.$t("Game") + this.$t("Category"),
-          minWidth: 150
+          minWidth: 100
         },
         {
           key: "official_version",
           title: this.$t("Game") + this.$t("Formal") + this.$t("Version"),
-          minWidth: 180
+          minWidth: 150
         },
         {
           key: "latest_doseed_version",
           title: this.$t("Latest") + this.$t("Doseed") + this.$t("Version"),
-          minWidth: 180
+          minWidth: 150
         },
         {
           key: "allocate_server_count",
           title: this.$t("Allocated") + this.$t("Server"),
-          minWidth: 160
+          minWidth: 128
         },
         {
           key: "sync_completion_count",
           title: this.$t("NumberofSyncedCompleted"),
-          width: 174,
-          minWidth: 174
+          minWidth: 128
         },
         {
           key: "sync_completion_rate",
           title: this.$t("SyncCompletRate"),
-          minWidth: 166
+          minWidth: 130
         },
         {
           key: "action",
           title: this.$t("Operation"),
           minWidth: 160,
+          fixed: "right",
           render: (h, params) => {
             return h(
               "Button",

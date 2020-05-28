@@ -18,9 +18,9 @@
         :disabled="loading"
         search
         style="width:300px;margin-right:10px;"
-        enter-button="搜索"
+        :enter-button="this.$t('Search')"
         @on-search="HandleSearch"
-        placeholder="输入游戏名称"
+        :placeholder="this.$t('igm')"
       />
     </div>
     <Table
@@ -44,7 +44,7 @@
 </template>
 <script>
 import { getGameListByIp } from "@/api/server";
-import { kbtosize } from "../../../../utils/index";
+import { Bytestosize } from "../../../../utils/index";
 export default {
   data() {
     return {
@@ -55,7 +55,7 @@ export default {
       gameList: [],
       timer: null,
       offset: 0,
-      limit: 17,
+      limit: 10,
       operateValue: 0,
       operateState: 0,
       pageinfo: {
@@ -69,15 +69,15 @@ export default {
         },
         {
           value: 1,
-          label: "下载"
+          label: this.$t("Download")
         },
         {
           value: 2,
-          label: "上传"
+          label: this.$t("Upload")
         },
         {
           value: 999,
-          label: "失败"
+          label: this.$t("Failed")
         }
       ],
       columns1: [
@@ -88,17 +88,17 @@ export default {
           sortable: "custom",
           render: (h, params) => {
             let operate = {
-              1: "下载",
-              2: "上传",
-              3: "做种",
-              4: "停止上传",
-              5: "删除游戏"
+              1: this.$t("Download"),
+              2: this.$t("Upload"),
+              3: this.$t("Seeding"),
+              4: this.$t("stopUpload"),
+              5: this.$t("deleteGame")
             };
             let state = {
-              1: "处理中",
-              2: "等待中",
-              3: "成功",
-              4: "失败"
+              1: this.$t("Processing"),
+              2: this.$t("Waitting"),
+              3: this.$t("Success"),
+              4: this.$t("Failed")
             };
             switch (params.row.operateType) {
               case 1:
@@ -242,7 +242,7 @@ export default {
           key: "updateBytes",
           minWidth: 120,
           render: (h, param) => {
-            return h("span", kbtosize(param.row.updateBytes));
+            return h("span", Bytestosize(param.row.updateBytes));
           }
         },
         {
@@ -258,7 +258,7 @@ export default {
           key: "uploadBytes",
           minWidth: 120,
           render: (h, param) => {
-            return h("span", kbtosize(param.row.uploadBytes));
+            return h("span", Bytestosize(param.row.uploadBytes));
           }
         },
         {
@@ -266,34 +266,48 @@ export default {
           key: "uploadSpeed",
           minWidth: 120,
           render: (h, param) => {
-            return h("span", kbtosize(param.row.uploadSpeed));
+            return h("span", this.formatSize(param.row.uploadSpeed));
           }
         },
         {
           title: this.$t("Version"),
           key: "versionCode",
-          minWidth: 140
+          minWidth: 140,
+          maxWidth: 140
+        },
+        {
+          title: " ",
+          key: ""
         }
       ],
       data1: [],
-      Copylimit: 17,
       searchFlat: false,
       sortOjb: {
         order: "asc"
       },
-      CopyGameList: []
+      isState: false, // 状态筛选开关
+      isSearch: false, // 搜索开关
+      searchVal: "", // 搜索的值
+      stateVal: "",
+      showList: [],
+      currentPage: 1
     };
-  },
-  computed: {
-    showList() {
-      return this.gameList.slice(this.offset, this.Copylimit);
-    }
   },
   created() {
     this.currentIp = this.$route.query;
     this.FetchData(this.currentIp).then(() => {
       this.start();
     });
+  },
+  watch: {
+    isSearch() {
+      this.offset = 0;
+      this.currentPage = 1;
+    },
+    isState() {
+      this.offset = 0;
+      this.currentPage = 1;
+    }
   },
   beforeRouteLeave(to, from, next) {
     window.clearTimeout(this.timer);
@@ -307,27 +321,17 @@ export default {
   },
   methods: {
     HandleChangePage(current) {
+      this.loading = true;
+      this.currentPage = current;
       this.offset = (current - 1) * this.limit;
-      this.Copylimit =
-        this.offset === 0 ? this.limit : this.limit + this.offset;
     },
     async HandleSearch(val) {
-      this.offset = 0;
+      this.searchVal = val;
       this.loading = true;
-      try {
-        if (val) {
-          this.SearchgameList = this.CopyGameList.filter(item => {
-            if (item.name.match(val) || item.centerid.toString() == val) {
-              return true;
-            }
-          });
-          this.searchFlat = true;
-        } else {
-          this.searchFlat = false;
-        }
-        console.log(this.SearchgameList);
-      } catch (error) {
-        console.log(error);
+      if (val) {
+        this.isSearch = true;
+      } else {
+        this.isSearch = false;
       }
     },
     async start() {
@@ -357,43 +361,29 @@ export default {
       return size;
     },
     async FetchData(params) {
-      let temp = [];
       try {
         let resp = await getGameListByIp(params.ip);
-        this.gameList = resp.data.data.data;
-        if (resp.data.data.ok) {
-          if (this.searchFlat) {
-            var list = resp.data.data.data;
-            for (let i = 0; i < list.length; i++) {
-              for (let x = 0; x < this.SearchgameList.length; x++) {
-                if (list[i].name == this.SearchgameList[x].name) {
-                  temp.push(list[i]);
-                }
-              }
-            }
-            this.gameList = temp;
-          }
-          if (this.operateValue !== 0 && this.operateValue !== 999) {
-            this.gameList = this.gameList.filter(item => {
-              return item.operateType === this.operateValue;
-            });
-          }
-          if (this.operateValue === 999) {
-            this.gameList = this.gameList.filter(item => {
-              return item.taskStatus === 4;
-            });
-          }
-          if (this.sortOjb.order === "asc") {
-            this.gameList.sort((a, b) => {
-              return a.operateType - b.operateType;
-            });
-          } else {
-            this.gameList.sort((a, b) => {
-              return b.operateType - a.operateType;
-            });
-          }
-          this.CopyGameList = this.gameList.slice(0, this.gameList.length);
+        let list = resp.data.data.data;
+        this.gameList = this.filterData(
+          list,
+          this.searchVal,
+          this.stateVal,
+          this.isSearch,
+          this.isState
+        );
+        if (this.sortOjb.order === "asc") {
+          this.gameList.sort((a, b) => {
+            return a.operateType - b.operateType;
+          });
+        } else {
+          this.gameList.sort((a, b) => {
+            return b.operateType - a.operateType;
+          });
         }
+        this.showList = this.gameList.slice(
+          this.offset,
+          this.limit * this.currentPage
+        );
       } catch (error) {
         window.clearTimeout(this.timer);
         this.$Message.error(error.data.error);
@@ -403,12 +393,64 @@ export default {
     },
     HandleOperateType(value) {
       this.loading = true;
-      this.offset = 0;
-      this.operateValue = value;
+      if (value !== 0) {
+        this.isState = true;
+      } else {
+        this.isState = false;
+      }
+      this.stateVal = value;
+      // this.loading = true;
+      // this.offset = 0;
+      // this.operateValue = value;
     },
     handleSortChange({ key, order }) {
       this.loading = true;
       this.sortOjb = { key, order };
+    },
+
+    filterData(srcList, searchValue, state, isSearch, isState) {
+      let newSearchList = [];
+      let newStateList = [];
+      let temp = [];
+      let xtemp = srcList;
+      if (isSearch) {
+        for (let j = 0; j < srcList.length; j++) {
+          if (
+            srcList[j].name.match(searchValue) ||
+            srcList[j].centerid === searchValue
+          ) {
+            newSearchList.push(srcList[j]);
+          }
+        }
+        xtemp = newSearchList;
+      }
+      if (isState) {
+        if (state !== 0 && state !== 999) {
+          for (let j = 0; j < srcList.length; j++) {
+            if (srcList[j].operateType === state) {
+              newStateList.push(srcList[j]);
+            }
+          }
+        } else if (state === 999) {
+          for (let j = 0; j < srcList.length; j++) {
+            if (srcList[j].taskStatus === 4) {
+              newStateList.push(srcList[j]);
+            }
+          }
+        }
+        xtemp = newStateList;
+      }
+      if (isState && isSearch) {
+        for (let j = 0; j < newSearchList.length; j++) {
+          for (let i = 0; i < newStateList.length; i++) {
+            if (newStateList[i].name === newSearchList[j].name) {
+              temp.push(newSearchList[j]);
+            }
+          }
+        }
+        xtemp = temp;
+      }
+      return xtemp;
     }
   }
 };

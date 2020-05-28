@@ -54,7 +54,7 @@
           >
             <Input type="text" v-model.number="form.run_parameter" />
           </FormItem>
-          <FormItem prop="introduce" label="服务器分组">
+          <FormItem prop="introduce" :label="this.$t('serverGroup')">
             <CheckboxGroup v-model="btserverValue">
               <template v-for="item in btserverList">
                 <Checkbox

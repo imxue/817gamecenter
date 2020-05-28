@@ -4,9 +4,9 @@
       <Input
         search
         style="width:300px;"
-        enter-button="搜索"
+        :enter-button="this.$t('Search')"
         @on-search="HandleSearch"
-        placeholder="输入需要搜索的游戏名称首字母"
+        :placeholder="this.$t('sgf')"
       />
     </div>
     <Table
@@ -19,11 +19,13 @@
       @on-contextmenu="handleContextMenu"
     >
       <template slot="contextMenu">
-        <DropdownItem @click.native="handleContextMenuEdit">编辑</DropdownItem>
+        <DropdownItem @click.native="handleContextMenuEdit">{{
+          $t("Edit")
+        }}</DropdownItem>
         <DropdownItem
           @click.native="handleContextMenuDelete"
           style="color: #ed4014"
-          >删除</DropdownItem
+          >{{ $t("Delete") }}</DropdownItem
         >
       </template>
     </Table>

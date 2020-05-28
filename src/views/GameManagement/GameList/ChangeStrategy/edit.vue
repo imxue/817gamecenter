@@ -90,13 +90,13 @@ export default {
       },
       Servertype: "",
       typeOpt: {
-        1: "全局",
-        2: "自定义"
+        1: this.$t("Global"),
+        2: this.$t("customize")
       },
       NotShow: false,
       typeNmae: {
-        1: "全局策略",
-        2: "自定义策略"
+        1: this.$t("Global") + this.$t("Strategy"),
+        2: this.$t("customize") + this.$t("Strategy")
       },
       rule: {
         name: [
@@ -164,10 +164,10 @@ export default {
             this.form.name = this.typeNmae[this.Servertype];
             this.form.type = this.Servertype;
             await editGameVersionconfig(this.form);
-            this.$Message.success("创建成功");
+            this.$Message.success(this.$t("Creeat") + this.$t("Success"));
             this.$router.go(-1);
           } catch (error) {
-            this.$Message.success("创建失败");
+            this.$Message.success(this.$t("Creeat") + this.$t("Failed"));
           } finally {
             this.loading = false;
           }

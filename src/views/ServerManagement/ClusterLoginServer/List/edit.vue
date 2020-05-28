@@ -1,7 +1,7 @@
 <template>
   <div style="width:440px">
     <Form ref="form" :model="form" :rules="rule" :label-width="80">
-      <FormItem label="类型" prop="type">
+      <FormItem :label="this.$t('Type')" prop="type">
         <Select v-model.number="form.type">
           <Option :value="0"
             >{{ this.$t("Cluster") }}{{ this.$t("Login")

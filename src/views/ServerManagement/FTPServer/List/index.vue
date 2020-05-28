@@ -1,11 +1,6 @@
 <template>
   <div>
     <div>
-      <!-- <Select v-model="LineTypeId" @on-change="ChangeLineType">
-          <Option v-for="item in LineType" :value="item.id" :key="item.id">{{
-            item.name
-          }}</Option>
-        </Select> -->
       <Input
         search
         style="width:300px"
@@ -59,59 +54,6 @@ export default {
           width: 60,
           align: "center"
         },
-        // {
-        //   // title: "FTP状态",
-        //   title: "FTP" + this.$t("Status"),
-        //   key: "ftp_status",
-        //   width: 110,
-        //   render: (h, params) => {
-        //     let isOnline = {
-        //       1: {
-        //         title: this.$t("Normal"),
-        //         color: "#52c41a"
-        //       },
-        //       0: {
-        //         title: this.$t("Abnormal"),
-        //         color: "#ffa39e"
-        //       }
-        //     };
-        //     return h(
-        //       "span",
-        //       {
-        //         style: {
-        //           color: isOnline[params.row.ftp_status].color || "-"
-        //         }
-        //       },
-        //       isOnline[params.row.ftp_status].title || "-"
-        //     );
-        //   }
-        // },
-        // {
-        //   title: "HTTP" + this.$t("Status"),
-        //   width: 120,
-        //   key: "http_status",
-        //   render: (h, params) => {
-        //     let isOnline = {
-        //       1: {
-        //         title: this.$t("Normal"),
-        //         color: "#52c41a"
-        //       },
-        //       0: {
-        //         title: this.$t("Abnormal"),
-        //         color: "#ffa39e"
-        //       }
-        //     };
-        //     return h(
-        //       "span",
-        //       {
-        //         style: {
-        //           color: isOnline[params.row.http_status].color || "-"
-        //         }
-        //       },
-        //       isOnline[params.row.http_status].title || "-"
-        //     );
-        //   }
-        // },
         {
           title: this.$t("ExtranetDom") + "/" + this.$t("IP"),
           key: "domain",

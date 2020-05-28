@@ -95,8 +95,8 @@ export default {
           () => {},
           () => {
             this.$Modal.info({
-              title: "操作提示",
-              content: `已存在默认线路，默认线路为唯一。<br/> 如果您知晓您的操作<br/>请手动取消当前默认线路`,
+              title: this.$t("opttip"),
+              content: this.$t("tip"),
               onOk: () => {
                 this.form.is_default = 0;
               }

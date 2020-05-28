@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="RunContainer">
     <Form
       ref="form"
       :model="form"
@@ -8,9 +8,9 @@
       label-colon
       label-position="right"
     >
-      <div class="flex">
-        <div>
-          <FormItem label="类型" prop="type">
+      <Row :gutter="16">
+        <Col span="12">
+          <FormItem :label="this.$t('Type')" prop="type">
             <Select v-model="form.type" class="w200">
               <Option :value="1"
                 >{{ this.$t("Sync") }}{{ this.$t("Source")
@@ -43,8 +43,8 @@
           >
             <Input v-model="form.upload_password" type="password"> </Input>
           </FormItem>
-        </div>
-        <div>
+        </Col>
+        <Col span="12">
           <FormItem
             :label="this.$t('Download') + this.$t('Account')"
             prop="download_account"
@@ -86,8 +86,9 @@
               <Option :value="0">{{ $t("Disabled") }}</Option>
             </Select>
           </FormItem>
-        </div>
-      </div>
+        </Col>
+      </Row>
+
       <FormItem>
         <div style="display:flex;">
           <Button
@@ -218,11 +219,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .w200 {
-//   width: 200px;
-// }
-.flex {
-  display: flex;
-  width: 800px;
+.RunContainer {
+  max-width: 1000px;
 }
 </style>

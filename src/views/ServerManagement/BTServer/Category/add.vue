@@ -54,7 +54,7 @@
           v-model="form.comments"
           type="textarea"
           :rows="4"
-          placeholder="添加备注"
+          :placeholder="this.$t('addComment')"
         />
       </FormItem>
       <FormItem>
@@ -157,7 +157,7 @@ export default {
       this.form.line_type_id = this.LineType[0] && this.LineType[0].id;
       this.ServerGroup = resp[1].data.data;
       this.form.bt_server_group_id =
-        this.ServerGroup[0] && this.ServerGroup[1].id;
+        this.ServerGroup[0] && this.ServerGroup[0].id;
       this.Area = resp[2].data.data;
       this.form.area_code = this.Area[0].Id;
       this.disabled = false;

@@ -109,8 +109,8 @@ export default {
             () => {},
             () => {
               this.$Modal.info({
-                title: "操作提示",
-                content: `已存在默认线路，默认线路为唯一。<br/> 如果您知晓您的操作<br/>请手动取消当前默认线路`,
+                title: this.$t("opttip"),
+                content: this.$t("opttip"),
                 onOk: () => {
                   this.data.is_default = 0;
                 }
@@ -122,9 +122,9 @@ export default {
         if (this.IsDefaultLine.name) {
           if (this.IsDefaultLine.name === this.data.name) {
             this.$Modal.confirm({
-              title: "操作提示",
-              content: `已存在默认线路<br/>需要手动取消当前默认线路<br/><br/><code>此操作存在风险，请谨慎操作！</code>`,
-              cancelText: "关闭"
+              title: this.$t("opttip"),
+              content: this.$t("tip2"),
+              cancelText: this.$t("closed")
             });
           }
         }
