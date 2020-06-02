@@ -12,7 +12,7 @@ let lang =
   localStorage.getItem("GameLang") ||
   navigator.language ||
   navigator.userLanguage ||
-  "zh-CN";
+  "zh-TW";
 const i18n = new VueI18n({
   locale: lang,
   messages: {
