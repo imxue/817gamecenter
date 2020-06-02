@@ -165,6 +165,10 @@ export default {
           render: (h, params) => {
             return h("span", parseTime(params.row.update_time));
           }
+        },
+        {
+          key: "",
+          title: " "
         }
       ],
       data: [],

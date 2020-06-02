@@ -161,6 +161,10 @@ export default {
           render: (h, params) => {
             return h("span", parseTime(params.row.last_allocate_time));
           }
+        },
+        {
+          key: "",
+          title: " "
         }
       ],
       data: [],

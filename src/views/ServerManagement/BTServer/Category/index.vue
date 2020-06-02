@@ -60,38 +60,50 @@
         </Button>
       </Col>
     </div>
-      <Table
+    <Table
       size="small"
-        :columns="columns"
-        :data="data"
-        border
-        :loading="loading"
-        @on-selection-change="ChangeSelection"
-        context-menu
+      :columns="columns"
+      :data="data"
+      border
+      :loading="loading"
+      @on-selection-change="ChangeSelection"
+      context-menu
       show-context-menu
       @on-contextmenu="handleContextMenu"
-      >
-       <template slot="contextMenu">
+    >
+      <template slot="contextMenu">
+        <DropdownItem @click.native="handleContextMenuEdit">{{
+          $t("Edit")
+        }}</DropdownItem>
         <DropdownItem
-          @click.native="handleContextMenuEdit"
-          >{{$t('Edit')}}</DropdownItem>
-        <DropdownItem style="color: #ed4014" @click.native="handleContextMenuResou">{{$t('ResourceStatus')}}</DropdownItem>
-        <DropdownItem style="color: #ed4014" @click.native="handleContextMenuSetRun">{{ $t("Set") }}{{ $t("RunConfig") }}</DropdownItem>
+          style="color: #ed4014"
+          @click.native="handleContextMenuResou"
+          >{{ $t("ResourceStatus") }}</DropdownItem
+        >
+        <DropdownItem
+          style="color: #ed4014"
+          @click.native="handleContextMenuSetRun"
+          >{{ $t("Set") }}{{ $t("RunConfig") }}</DropdownItem
+        >
       </template>
-      </Table>
-      <Page
-        show-total
-        :total="pageinfo.count"
-        :page-size="limit"
-        style="margin-top:10px;float:right;"
-        @on-change="HandleChangePage"
-      />
-    </div>
+    </Table>
+    <Page
+      show-total
+      :total="pageinfo.count"
+      :page-size="limit"
+      style="margin-top:10px;float:right;"
+      @on-change="HandleChangePage"
+    />
   </div>
+  <!-- </div> -->
 </template>
 
 <script>
-import { getAllenabled, getAllBtServerGroupenabled, getBTServer } from "@/api/server";
+import {
+  getAllenabled,
+  getAllBtServerGroupenabled,
+  getBTServer
+} from "@/api/server";
 import { parseTime } from "@/utils";
 export default {
   name: "ListIndex",
@@ -174,7 +186,7 @@ export default {
           title: this.$t("Lately") + this.$t("Exceptions") + this.$t("Message"),
           key: "except_msg",
           minWidth: 185,
-          ellipsis:true,
+          ellipsis: true,
           tooltip: true
         },
         {
@@ -182,11 +194,11 @@ export default {
           key: "version",
           minWidth: 110,
           maxWidth: 110,
-          ellipsis:true,
+          ellipsis: true,
           tooltip: true
         },
         {
-        title: this.$t("Available"),
+          title: this.$t("Available"),
           key: "enable",
           minWidth: 100,
           maxWidth: 100,
@@ -225,20 +237,24 @@ export default {
           title: this.$t("Status"),
           minWidth: 130,
           key: "operator",
-          fixed: 'right',
+          fixed: "right",
           render: (h, params) => {
             let a;
-            a= h('Button',{
-              props:{
-                type:"primary"
+            a = h(
+              "Button",
+              {
+                props: {
+                  type: "primary"
+                },
+                on: {
+                  click: () => {
+                    this.getGameIp(params.row.ip);
+                  }
+                }
               },
-             on:{
-               click: () => {
-                this.getGameIp(params.row.ip)
-              }
-             }
-            },this.$t('ResourceStatus'))
-            return a
+              this.$t("ResourceStatus")
+            );
+            return a;
           }
         }
       ],
@@ -258,7 +274,7 @@ export default {
         count: 2
       },
       ip: "",
-      currentItem:""
+      currentItem: ""
     };
   },
   methods: {
@@ -266,11 +282,11 @@ export default {
       this.HandleGetBTServer({
         offset: page * this.limit - this.limit,
         limit: page * this.limit,
-        type: this.ServerType || '',
-        groupid: this.ServerGroupId || '',
-        linetypeid: this.LineTypeId || '',
-        ip: this.ip || '',
-        orderby: this.orderby || ''
+        type: this.ServerType || "",
+        groupid: this.ServerGroupId || "",
+        linetypeid: this.LineTypeId || "",
+        ip: this.ip || "",
+        orderby: this.orderby || ""
       });
     },
     HandleSearch(v) {
@@ -384,32 +400,30 @@ export default {
     getGameIp(e) {
       this.$router.push({
         path: "/ServerManagement/BtServerCategory/Gamelist",
-        query: {ip:e}
-      })
-      
+        query: { ip: e }
+      });
     },
     handleContextMenu(row) {
-      this.currentItem = row
+      this.currentItem = row;
     },
     handleContextMenuResou() {
-      this.currentItem.ip
+      this.currentItem.ip;
       this.$router.push({
         path: "/ServerManagement/BtServerCategory/Gamelist",
-        query: {ip:this.currentItem.ip}
-      })
-      
+        query: { ip: this.currentItem.ip }
+      });
     },
     handleContextMenuEdit() {
       this.$router.push({
-          path: "/ServerManagement/BtServerCategory/setRunConfig",
-          query: [this.currentItem]
-        });
+        path: "/ServerManagement/BtServerCategory/setRunConfig",
+        query: [this.currentItem]
+      });
     },
     handleContextMenuSetRun() {
       this.$router.push({
-          path: "/ServerManagement/BtServerCategory/setRunConfig",
-          query: [this.currentItem]
-        });
+        path: "/ServerManagement/BtServerCategory/setRunConfig",
+        query: [this.currentItem]
+      });
     }
   },
   async created() {
@@ -448,7 +462,6 @@ export default {
       ip: this.ip,
       orderby: this.orderby
     });
-    
   }
 };
 </script>

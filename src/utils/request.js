@@ -11,14 +11,6 @@ const service = axios.create({
 let notAuthorization = ["/base_setting/sys_user/login"];
 service.interceptors.request.use(
   request => {
-    if (request.url.includes("startHttpRequest")) {
-      request.data = {};
-      request.data.url = `http://${request.param}:12345/api/GetGameList`;
-      request.data.method = `GET`;
-      request.data.param = null;
-      return request;
-    }
-
     if (
       localStorage.getItem("gamecenterToken") &&
       notAuthorization.indexOf(request.url) === -1
@@ -27,6 +19,14 @@ service.interceptors.request.use(
         "gamecenterToken"
       );
     }
+    if (request.url.includes("startHttpRequest")) {
+      request.data = {};
+      request.data.url = `http://${request.param}:12345/api/GetGameList`;
+      request.data.method = `GET`;
+      request.data.param = null;
+      return request;
+    }
+
     if (request.data && localStorage.getItem("gamecenterToken")) {
       let user = parseJWT(localStorage.getItem("gamecenterToken"));
       request.data["operator"] = user ? user.user_name : "";

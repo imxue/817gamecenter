@@ -8,11 +8,7 @@ Vue.locale = () => {};
 import zhCN from "./zh-CN";
 import Cusomen from "./en";
 import CusomZhTw from "./Tra";
-let lang =
-  localStorage.getItem("GameLang") ||
-  navigator.language ||
-  navigator.userLanguage ||
-  "zh-TW";
+let lang = localStorage.getItem("GameLang") || "zh-TW";
 const i18n = new VueI18n({
   locale: lang,
   messages: {
