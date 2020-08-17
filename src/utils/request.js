@@ -68,6 +68,14 @@ service.interceptors.response.use(
           router.go(-1);
         }
       });
+    } else if (error.request && error.request.status === 403) {
+      ViewUI.Modal.warning({
+        title: i18n.t("Message"),
+        content: "登录超时，请重新登录",
+        onOk: () => {
+          router.push("/User/login");
+        }
+      });
     }
   }
 );

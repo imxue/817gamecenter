@@ -221,7 +221,7 @@ export default {
     "The default line has been existed!<br/> If you know the operation<br/>Please cancel the default line by manual",
   opttip: "Operation Tips",
   tip2:
-    "The default line has been existed!<br/>Need cancel by manual<br/><br/><code>Please proceed with caution��</code>",
+    "The default line has been existed!<br/>Need cancel by manual<br/><br/><code>Please proceed with caution!</code>",
   closed: "Close",
   addComment: "Add Remark",
   igm: "Enter game name or ID",
@@ -230,5 +230,12 @@ export default {
   Processing: "Poecessing",
   Waitting: "Waitting",
   Delete: "Remove",
-  ResourceStatus: "Resource Status"
+  ResourceStatus: "Resource Status",
+  barGameClick: "Game Clicks",
+  Event: "Event",
+  notStarted: "Unstart",
+  Ongoing: "Progressing",
+  Expiration: "Expired",
+  PushGame: "Forciby Push",
+  ScheduleSuccess: "Scheduled"
 };

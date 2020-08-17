@@ -568,3 +568,33 @@ export const verifyGameNameUnique = name => {
     method: "get"
   });
 };
+
+export const getforcePushPeriod = () => {
+  return request({
+    url: `/game_management/force_push_period/getall`,
+    method: "get"
+  });
+};
+
+export const addforcePushPeriod = data => {
+  return request({
+    url: `/game_management/force_push_period/add`,
+    method: "post",
+    data
+  });
+};
+
+export const editforcePushPeriod = data => {
+  return request({
+    url: `/game_management/force_push_period/edit`,
+    method: "post",
+    data
+  });
+};
+
+export const getClickEvent = data => {
+  return request({
+    url: `/event_monitoring/game_click_statistics/getall?offset=${data.offset}&limit=${data.limit}&date=${data.date}&typeid=${data.typeid}&firstletter=${data.firstletter}`,
+    method: "get"
+  });
+};

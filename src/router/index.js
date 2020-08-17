@@ -245,6 +245,18 @@ const routes = [
                   import(
                     /* webpackChunkName: "black" */ "../views/GameManagement/BtSrv/GameState/index.vue"
                   )
+              },
+              {
+                path: "/GameManagement/BtSrv/forceGame",
+                name: "/GameManagement/BtSrv/forceGame",
+                meta: {
+                  title: "强推游戏",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "black" */ "../views/GameManagement/BtSrv/ForceGame/index.vue"
+                  )
               }
             ]
           }
@@ -750,6 +762,18 @@ const routes = [
                 component: () =>
                   import(
                     /* webpackChunkName: "EventQuery" */ "../views/EventMonitor/EventQuery/GameProduceJSOMLog/index.vue"
+                  )
+              },
+              {
+                path: "/EventMonitoring/EventQuery/barGameClick",
+                name: "/EventMonitoring/EventQuery/barGameClick",
+                meta: {
+                  title: "barGameClick",
+                  show: true
+                },
+                component: () =>
+                  import(
+                    /* webpackChunkName: "EventQuery" */ "../views/EventMonitor/EventQuery/GameClickEvent/index.vue"
                   )
               }
               // {

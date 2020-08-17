@@ -161,8 +161,8 @@ export default {
                   },
                   on: {
                     click: () => {
-                      let type = param.row.type;
-                      param.row.low_load[0].type = type;
+                      // let type = param.row.type;
+                      // param.row.low_load[0].type = type;
                       this.$router.push({
                         path:
                           "/EventMonitoring/ConditionMonitoring/ServerState/Serveretails",

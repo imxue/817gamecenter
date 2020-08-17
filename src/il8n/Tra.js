@@ -230,5 +230,12 @@ export default {
   Processing: "處理中",
   Waitting: "等待中",
   Delete: "刪除",
-  ResourceStatus: "資源狀態"
+  ResourceStatus: "資源狀態",
+  barGameClick: "遊戲點擊",
+  Event: "事件",
+  notStarted: "未開始",
+  Ongoing: "進行中",
+  Expiration: "過期",
+  PushGame: "強推遊戲",
+  ScheduleSuccess: "排期遊戲"
 };
